@@ -1,9 +1,13 @@
 {
   "name": "quiz-game-online-backend",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "private": true,
   "type": "module",
-  "scripts": { "start": "node server.js" },
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check anti-cheat.js && node --check question-bank.js && node --check global-leaderboard.js && node --check smoke-test.js",
+    "smoke": "node server.js & SERVER_PID=$!; trap 'kill $SERVER_PID' EXIT; sleep 1; node smoke-test.js"
+  },
   "engines": { "node": ">=18" },
   "dependencies": { "cors": "^2.8.5", "express": "^4.21.2" }
 }
