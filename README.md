@@ -1,59 +1,54 @@
 # Quiz Game
 
-**Version:** v5.0.0 — Online Foundation 🌐🚀
+**Version:** v5.1.0 — ONLINE SERVER KIT 🌐🚀
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.0.0 bổ sung **Online Foundation**: định danh người chơi, Player ID ổn định, hàng đợi đồng bộ, cloud adapter và Online Hub, trong khi game vẫn chơi đầy đủ khi offline.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.1.0 mở rộng Online Foundation thành một **backend kit chạy được bằng Node.js**, có health check, player sync và online leaderboard foundation. Frontend vẫn chơi offline nếu không cấu hình server.
+
+## v5.1.0 — ONLINE SERVER KIT
+
+### 🌐 Runnable Online API
+
+Thư mục `backend/` chứa server Node.js/Express tùy chọn:
+
+- `GET /health` — kiểm tra server.
+- `POST /players/sync` — nhận Player ID, username và pending events.
+- `GET /leaderboard` — trả về bảng xếp hạng hoạt động online hiện tại.
+
+Chạy:
+
+```text
+cd backend
+npm install
+npm start
+```
+
+Mặc định server chạy ở port `3000`.
+
+### ☁️ Kết nối frontend
+
+`online.js` đã có adapter:
+
+```js
+QuizOnline.configure("http://localhost:3000");
+```
+
+Sau đó `QuizOnline.sync()` có thể gửi pending queue tới `/players/sync`.
+
+### ⚠️ Giới hạn v5.1.0
+
+Backend hiện dùng `Map` trong RAM để làm nền tảng phát triển. Restart server sẽ xóa dữ liệu online. Đây **chưa phải production backend**. Trước khi public cần thêm database, authentication, rate limiting, HTTPS, validation và persistent leaderboard.
+
+GitHub Pages vẫn chỉ host frontend; server phải được deploy riêng.
 
 ## v5.0.0 — ONLINE FOUNDATION
 
-### 🌐 Online Hub
-
-Trang chủ có nút **ONLINE** để quản lý danh tính online:
-
 - 🆔 Player ID duy nhất.
 - 👤 Username tối đa 16 ký tự.
-- ☁️ Sync Now qua API backend tùy cấu hình.
-- 📦 Export Online Profile để backup.
-- 📡 Pending Sync Queue giữ các sự kiện chưa đồng bộ.
+- ☁️ Cloud sync adapter.
+- 📦 Export Online Profile.
+- 📡 Pending Sync Queue.
 - 🟢 Connected / 🟠 Retry / ⚪ Offline-first status.
-
-### ☁️ Cloud Adapter
-
-`online.js` cung cấp API adapter:
-
-- `QuizOnline.sync()` — đồng bộ dữ liệu đang chờ.
-- `QuizOnline.queue(type, payload)` — xếp sự kiện vào hàng đợi.
-- `QuizOnline.configure(apiBase)` — cấu hình URL backend.
-- `QuizOnline.isConfigured()` — kiểm tra backend đã cấu hình hay chưa.
-
-Endpoint sync dự kiến:
-
-```text
-POST <API_BASE>/players/sync
-```
-
-Payload gồm Player ID, username và các sự kiện đang chờ.
-
-> **Lưu ý kiến trúc:** GitHub Pages chỉ host frontend tĩnh, vì vậy v5.0.0 đã chuẩn bị đầy đủ lớp client/backend adapter nhưng **chưa tự tạo một server cloud thật**. Khi có backend, chỉ cần cấu hình `QuizOnline.configure("https://your-api.example")`. Không giả mạo leaderboard online khi chưa có server.
-
-### 🛡️ Offline-first
-
-Nếu không có backend:
-
-- Game vẫn hoạt động bình thường.
-- Player ID vẫn được lưu local.
-- Sự kiện được đưa vào pending queue.
-- Có thể export profile.
-- Không mất gameplay vì lỗi mạng.
-
-### 💾 Save Isolation
-
-v5 dùng các key riêng:
-
-- `quizGame_v500_online`
-- `quizGame_v500_config`
-
-Không ghi đè trực tiếp save v4/v3/v2.
+- 💾 Save isolation.
 
 ## v4.0.0 — SUPER MAJOR II
 
@@ -91,15 +86,16 @@ Không ghi đè trực tiếp save v4/v3/v2.
 
 - **124+ câu hỏi**.
 - **15 chủ đề:** Tổng hợp, Khoa học, Địa lý, Lịch sử, Công nghệ, Toán, Sinh học, Vật lý, Hóa học, Vũ trụ, Văn hóa, Thể thao, Văn học, Việt Nam và Logic.
-- Content pack độc lập `expansion-content.js` bổ sung vào `QUESTION_BANK`.
 
 ## 📱 PWA / Offline
 
-- `manifest.json` lên v5.0.0.
-- Service Worker dùng cache `quiz-game-v5.0.0`.
-- Online Foundation cũng được cache để Online Hub hoạt động offline.
+- `manifest.json` lên v5.1.0.
+- Service Worker dùng cache `quiz-game-v5.1.0`.
+- Game vẫn chơi được khi backend offline hoặc chưa cấu hình.
 
 ## Công nghệ
+
+### Frontend
 
 - HTML5
 - CSS3
@@ -109,25 +105,22 @@ Không ghi đè trực tiếp save v4/v3/v2.
 - Web Crypto API
 - Service Worker API
 - Web App Manifest
-- Không cần backend để chơi.
-- Không dùng thư viện ngoài.
-- Chạy được trên GitHub Pages.
 
-## Chạy local
+### Optional Backend
 
-Mở `index.html` để chơi. PWA/Service Worker cần HTTPS hoặc localhost theo trình duyệt.
-
-## GitHub Pages
-
-1. Vào **Settings → Pages**.
-2. Chọn **Deploy from a branch**.
-3. Chọn branch `main` và `/ (root)`.
-4. Save và chờ GitHub Pages deploy.
+- Node.js 18+
+- Express
+- CORS
+- In-memory Map (development only)
 
 ## Cấu trúc
 
 ```text
 quiz-game/
+├── backend/
+│   ├── package.json
+│   ├── server.js
+│   └── README.md
 ├── index.html
 ├── style.css
 ├── supermajor.css
@@ -150,6 +143,10 @@ quiz-game/
 └── README.md
 ```
 
+## GitHub Pages
+
+Frontend vẫn deploy bình thường từ branch `main` và `/ (root)`. Backend không chạy trên GitHub Pages; hãy deploy thư mục `backend` lên một Node.js hosting riêng rồi cấu hình API URL cho frontend.
+
 ## Release History
 
 - v0.0.1: Core Quiz
@@ -166,4 +163,5 @@ quiz-game/
 - v2.1.0: Mega Content Update — 124+ Questions + 15 Categories
 - v3.0.0: Super Major Update — Player Hub + Campaign + Mastery + Relics + Weekly Missions + History + Settings
 - v4.0.0: Super Major II — Seasons + Ranked Rating + Weekly Tournament + Daily Event + Loot Vault + Seasonal Badges + Quiz Codex
-- **v5.0.0: Online Foundation — Player Identity + Player ID + Cloud Adapter + Sync Queue + Online Hub + Offline-first Architecture**
+- v5.0.0: Online Foundation — Player Identity + Player ID + Cloud Adapter + Sync Queue + Online Hub + Offline-first Architecture
+- **v5.1.0: Online Server Kit — Runnable Node.js API + Health Check + Player Sync + Online Leaderboard Foundation**
