@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v3.0.0 — Super Major Update",
+  "name": "Quiz Game v4.0.0 — Super Major II",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v3.0.0 with 124+ questions, 15 categories, game modes, power-ups, Campaign, Mastery, Relics, Weekly Missions and Player Hub.",
+  "description": "Quiz Game v4.0.0 with seasons, ranked rating, tournaments, daily events, loot, badges and Quiz Codex.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
