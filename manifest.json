@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v1.0.1",
+  "name": "Quiz Game v1.0.2",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v1.0.1 - Quality Update with keyboard controls.",
+  "description": "Quiz Game v1.0.2 - Statistics Update with lifetime player stats.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
