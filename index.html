@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Quiz Game v0.0.1 - Game trắc nghiệm kiến thức tổng hợp.">
+  <title>Quiz Game v0.0.1</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <section id="homeScreen" class="screen active">
+      <div class="hero">
+        <div class="version">VERSION 0.0.1</div>
+        <h1>QUIZ<br><span>GAME</span></h1>
+        <p>Thử thách kiến thức của bạn qua những câu hỏi nhanh và thú vị.</p>
+      </div>
+
+      <div class="home-card">
+        <div class="category-row">
+          <button class="category-btn selected" data-category="all">🌎 Tất cả</button>
+          <button class="category-btn" data-category="science">🔬 Khoa học</button>
+          <button class="category-btn" data-category="geography">🌍 Địa lý</button>
+          <button class="category-btn" data-category="history">📜 Lịch sử</button>
+          <button class="category-btn" data-category="technology">💻 Công nghệ</button>
+        </div>
+
+        <div class="rules">
+          <div><strong>10</strong><span>CÂU HỎI</span></div>
+          <div><strong>15s</strong><span>MỖI CÂU</span></div>
+          <div><strong>100</strong><span>ĐIỂM/CÂU</span></div>
+        </div>
+
+        <button id="startBtn" class="primary-btn">BẮT ĐẦU CHƠI</button>
+        <p class="best-score">🏆 Kỷ lục: <span id="homeHighScore">0</span> điểm</p>
+      </div>
+    </section>
+
+    <section id="quizScreen" class="screen">
+      <header class="quiz-header">
+        <div class="header-stat">
+          <span>CÂU</span>
+          <strong id="questionNumber">1/10</strong>
+        </div>
+        <div class="score-box">
+          <span>ĐIỂM</span>
+          <strong id="score">0</strong>
+        </div>
+        <div class="header-stat timer-stat">
+          <span>THỜI GIAN</span>
+          <strong id="timer">15</strong>
+        </div>
+      </header>
+
+      <div class="progress-track">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <div class="quiz-card">
+        <div id="categoryLabel" class="question-category">KHOA HỌC</div>
+        <h2 id="questionText">Câu hỏi</h2>
+        <div id="answers" class="answers"></div>
+        <div id="feedback" class="feedback"></div>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="screen">
+      <div class="result-card">
+        <div class="result-icon">🏆</div>
+        <div class="version">QUIZ COMPLETE</div>
+        <h2>KẾT QUẢ</h2>
+        <p class="result-message" id="resultMessage">Làm tốt lắm!</p>
+
+        <div class="final-score">
+          <span>ĐIỂM SỐ</span>
+          <strong id="finalScore">0</strong>
+        </div>
+
+        <div class="result-stats">
+          <div><strong id="correctCount">0</strong><span>ĐÚNG</span></div>
+          <div><strong id="wrongCount">0</strong><span>SAI</span></div>
+          <div><strong id="accuracy">0%</strong><span>CHÍNH XÁC</span></div>
+        </div>
+
+        <p class="record" id="recordMessage"></p>
+        <button id="playAgainBtn" class="primary-btn">CHƠI LẠI</button>
+        <button id="homeBtn" class="secondary-btn">VỀ TRANG CHỦ</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>Quiz Game v0.0.1 • Made for GitHub Pages</footer>
+
+  <script src="questions.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
