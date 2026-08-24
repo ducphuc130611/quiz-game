@@ -1,10 +1,10 @@
 # Quiz Game
 
-**Version:** v0.0.6
+**Version:** v0.0.7
 
 Game quiz trắc nghiệm chạy hoàn toàn trên trình duyệt và sẵn sàng cho GitHub Pages.
 
-## v0.0.6 — Profile System
+## v0.0.7 — Leaderboard System
 
 - 10 câu hỏi mỗi ván.
 - 15 giây cho mỗi câu.
@@ -17,15 +17,23 @@ Game quiz trắc nghiệm chạy hoàn toàn trên trình duyệt và sẵn sàn
 - 🪙 Coin System: nhận Coins sau mỗi ván dựa trên điểm số.
 - 🛒 Shop System với 5 vật phẩm.
 - 👤 Profile System: tên người chơi, avatar và thống kê cá nhân.
-- 📊 Profile hiển thị Level, Rank, XP, số ván, kỷ lục, Achievement, Coins và item đã mua.
-- 💾 Profile được lưu bằng `localStorage` và không làm mất dữ liệu game.
+- 🏆 Leaderboard System với Top 10 điểm số.
+- 📊 Leaderboard lưu tên, điểm, số câu đúng, độ chính xác và ngày chơi.
+- 🥇🥈🥉 Ba vị trí đầu có huy chương riêng.
+- 💾 Leaderboard được lưu bằng `localStorage` trên trình duyệt.
 - Chọn chủ đề: Tổng hợp, Khoa học, Địa lý, Lịch sử, Công nghệ.
 - Trộn câu hỏi và đáp án theo mỗi ván.
 - Hiển thị đáp án đúng khi trả lời sai hoặc hết giờ.
 - Giao diện responsive cho máy tính và điện thoại.
 - Không cần backend hoặc thư viện ngoài.
 
-## Profile v0.0.6
+## Leaderboard v0.0.7
+
+Sau mỗi ván, điểm số được tự động ghi vào bảng xếp hạng cục bộ. Bảng giữ tối đa 10 kết quả và sắp xếp theo điểm giảm dần.
+
+Leaderboard hiện là **local leaderboard**, nghĩa là dữ liệu chỉ được lưu trên trình duyệt của người chơi. Chưa có máy chủ chung giữa nhiều người chơi.
+
+## Profile
 
 Người chơi có thể:
 
@@ -60,6 +68,7 @@ quiz-game/
 ├── script.js
 ├── questions.js
 ├── achievements.js
+├── leaderboard.js
 ├── shop.js
 ├── profile.js
 └── README.md
@@ -67,5 +76,5 @@ quiz-game/
 
 ## Roadmap
 
-- v0.0.7: Leaderboard.
+- v0.0.7: ✅ Leaderboard.
 - v1.0.0: Release chính thức.
