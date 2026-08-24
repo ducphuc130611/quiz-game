@@ -1,0 +1,55 @@
+/* ============================================================
+   QUIZ GAME v4.0.0 — SUPER MAJOR II
+   Live-style seasons, tournaments, rating, events, loot and codex.
+   Local/offline-first; no external dependencies.
+   ============================================================ */
+(() => {
+  "use strict";
+  const KEY="quizGame_v400_super2";
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,"0");
+  const dayKey=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  const week=Math.floor(Date.now()/604800000);
+  const season=Math.floor((Date.now()-Date.UTC(2026,0,1))/2592000000)+1;
+  const defaultData=()=>({version:1,season,seasonXP:0,rating:1000,division:"Bronze",tournament:{week,score:0,wins:0,runs:0,best:0},event:{key:dayKey,progress:0,claimed:false},loot:[],badges:[],codex:[],streak:0,lastDay:"",history:[],settings:{compact:false}});
+  let data=(()=>{try{return {...defaultData(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch{return defaultData()}})();
+  function save(){localStorage.setItem(KEY,JSON.stringify(data));}
+  if(data.season!==season)data={...defaultData(),rating:data.rating,loot:data.loot,badges:data.badges,codex:data.codex};
+  if(data.tournament.week!==week)data.tournament={week,score:0,wins:0,runs:0,best:0};
+  if(data.event.key!==dayKey)data.event={key:dayKey,progress:0,claimed:false};
+  save();
+  const DIV=["Bronze","Silver","Gold","Platinum","Diamond","Master","Grandmaster"];
+  function division(){return DIV[Math.min(DIV.length-1,Math.floor(Math.max(0,data.rating-1000)/250))]}
+  function toast(msg){let e=document.getElementById("mega4Toast");if(!e){e=document.createElement("div");e.id="mega4Toast";document.body.appendChild(e)}e.textContent=msg;e.classList.add("show");clearTimeout(e.t);e.t=setTimeout(()=>e.classList.remove("show"),2800)}
+  const LOOT=["🧭 Ancient Compass","💎 Quantum Crystal","👑 Champion Crown","🌌 Galaxy Core","🔥 Phoenix Flame","⚡ Storm Shard","🧠 Scholar Relic","🛡️ Aegis Shield","🚀 Explorer Badge","🏆 Golden Trophy","🪐 Planet Ring","🗝️ Master Key"];
+  const BADGES=["FIRST BLOOD","RISING STAR","TOURNAMENT WINNER","TOP 1000","TOP 1200","TOP 1500","EVENT HUNTER","LOOT COLLECTOR","SEASON VETERAN","GRANDMASTER"];
+  const CODEX=[
+    ["QUIZ ACADEMY","Complete 10 runs","runs"],["SPEED LAB","Earn 100 speed bonus","speed"],["COMBO ARENA","Reach combo 15","combo"],["HARDCORE","Finish Survival","survival"],
+    ["SCHOLAR","Answer 250 questions","correct"],["CHALLENGER","Score 10,000 in a run","score"],["COLLECTOR","Find 5 loot items","loot"],["TOURNAMENT","Finish 10 tournament runs","tournament"],
+    ["RANKED","Reach 1250 rating","rating"],["ELITE","Reach 1500 rating","rating2"],["EVENT MASTER","Complete a daily event","event"],["SEASONAL","Earn 5,000 season XP","season"]
+  ];
+  function addLoot(){const missing=LOOT.map((_,i)=>i).filter(i=>!data.loot.includes(i));if(!missing.length)return;const i=missing[Math.floor(Math.random()*missing.length)];data.loot.push(i);toast(`🎁 LOOT FOUND: ${LOOT[i]}`);save()}
+  function updateFromRun(){
+    const score=Number(document.getElementById("finalScore")?.textContent||0),correct=Number(document.getElementById("correctCount")?.textContent||0),combo=Number(document.getElementById("bestCombo")?.textContent||0),mode=(document.getElementById("quizMode")?.textContent||"").toLowerCase();
+    if(!score&&!correct)return;
+    const won=correct>=Math.ceil((correct+Number(document.getElementById("wrongCount")?.textContent||0))/2);
+    const delta=won?Math.max(8,Math.min(40,Math.round(score/100))):-Math.max(5,Math.min(20,Math.round(score/150)));
+    data.rating=Math.max(800,Math.min(2500,data.rating+delta));data.division=division();data.seasonXP+=Math.max(10,correct*8+Math.floor(score/100));
+    data.tournament.runs++;data.tournament.score+=score;data.tournament.best=Math.max(data.tournament.best,score);if(won)data.tournament.wins++;
+    data.event.progress=Math.min(100,data.event.progress+Math.min(20,Math.max(5,correct*2)));
+    data.history.unshift({date:new Date().toISOString(),score,correct,combo,mode,rating:data.rating});data.history=data.history.slice(0,20);
+    if(Math.random()<.35)addLoot();
+    checkBadges(score,correct,combo,mode);checkCodex(score,correct,combo,mode);save();renderMega();
+  }
+  function checkBadges(score,correct,combo,mode){
+    const checks=[data.tournament.runs>=1,data.rating>=1100,data.tournament.wins>=1,data.rating>=1000,data.rating>=1200,data.rating>=1500,data.event.claimed||data.event.progress>=100,data.loot.length>=8,data.seasonXP>=2500,data.rating>=2500];
+    checks.forEach((ok,i)=>{if(ok&&!data.badges.includes(i)){data.badges.push(i);toast(`🏅 Badge unlocked: ${BADGES[i]}`)}});
+  }
+  function checkCodex(score,correct,combo,mode){const legacy=(()=>{try{return JSON.parse(localStorage.getItem("quizGame_v102_stats")||"{}")}catch{return {}}})();const vals={runs:(window.QuizSuperMajor?.data?.games||0),speed:Number(legacy.bestSpeedBonus||0),combo:(window.QuizSuperMajor?.data?.bestCombo||combo),survival:mode.includes("survival"),correct:(window.QuizSuperMajor?.data?.correct||correct),score:score,loot:data.loot.length,tournament:data.tournament.runs,rating:data.rating,rating2:data.rating,event:data.event.progress>=100,season:data.seasonXP};CODEX.forEach((c,i)=>{if(!data.codex.includes(i)&&((c[2]==="survival"&&vals.survival)||(c[2]!=="survival"&&Number(vals[c[2]]||0)>=Number(c[1].match(/\d+/)?.[0]||1)))){data.codex.push(i);toast(`📖 Codex discovered: ${c[0]}`)}});save()}
+  function build(){if(document.getElementById("mega4Btn"))return;const home=document.querySelector("#homeScreen .home-actions");if(!home)return;const b=document.createElement("button");b.id="mega4Btn";b.className="shop-open-btn mega4-btn";b.textContent="🌠 SEASON HQ";home.appendChild(b);const o=document.createElement("div");o.id="mega4Overlay";o.innerHTML=`<div class="mega4-panel"><header><div><div class="version">SUPER MAJOR II • v4.0.0</div><h2>🌠 SEASON HQ</h2></div><button id="mega4Close">✕</button></header><nav><button data-v="overview">RANKED</button><button data-v="tournament">TOURNAMENT</button><button data-v="event">EVENT</button><button data-v="loot">LOOT</button><button data-v="codex">CODEX</button><button data-v="history">HISTORY</button></nav><div id="mega4Content"></div></div>`;document.body.appendChild(o);b.onclick=()=>{render("overview");o.classList.add("open")};o.querySelector("#mega4Close").onclick=()=>o.classList.remove("open");o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open")});o.querySelectorAll("nav button").forEach(x=>x.onclick=()=>render(x.dataset.v));render("overview")}
+  function render(v){const e=document.getElementById("mega4Content");if(!e)return;if(v==="overview")e.innerHTML=`<div class="mega4-hero"><span>SEASON ${season}</span><strong>${data.division}</strong><b>${data.rating} RATING</b><small>${data.seasonXP} SEASON XP</small></div><div class="mega4-grid"><div><b>${data.tournament.runs}</b><span>TOURNAMENT RUNS</span></div><div><b>${data.tournament.wins}</b><span>WINS</span></div><div><b>${data.loot.length}/${LOOT.length}</b><span>LOOT</span></div><div><b>${data.badges.length}/${BADGES.length}</b><span>BADGES</span></div></div><p class="mega4-note">Rating changes after every completed run. Keep winning to climb divisions.</p>`;else if(v==="tournament")e.innerHTML=`<h3>🏆 WEEKLY TOURNAMENT</h3><div class="tournament-card"><strong>${data.tournament.score}</strong><span>WEEKLY SCORE</span><p>${data.tournament.wins} wins • ${data.tournament.runs} runs</p><small>Personal offline tournament ladder. Beat your previous weekly score.</small></div>`;else if(v==="event")e.innerHTML=`<h3>🌠 DAILY EVENT: ${dayKey}</h3><div class="event-card"><strong>${data.event.progress}%</strong><div><i style="width:${data.event.progress}%"></i></div><p>Earn progress by completing quiz questions today.</p><button id="claimMegaEvent" class="primary-btn" ${data.event.progress>=100&&!data.event.claimed?"":"disabled"}>🎁 CLAIM EVENT REWARD</button></div>`;else if(v==="loot")e.innerHTML=`<h3>🎁 LOOT VAULT ${data.loot.length}/${LOOT.length}</h3><div class="loot-grid">${LOOT.map((x,i)=>`<div class="loot ${data.loot.includes(i)?"found":"locked"}"><strong>${data.loot.includes(i)?x.split(" ")[0]:"❔"}</strong><span>${data.loot.includes(i)?x.slice(2):"Unknown Loot"}</span></div>`).join("")}</div>`;else if(v==="codex")e.innerHTML=`<h3>📖 QUIZ CODEX ${data.codex.length}/${CODEX.length}</h3><div class="codex-list">${CODEX.map((x,i)=>`<div class="codex ${data.codex.includes(i)?"found":"locked"}"><b>${data.codex.includes(i)?"📖":"🔒"} ${x[0]}</b><small>${x[1]}</small></div>`).join("")}</div>`;else e.innerHTML=`<h3>📜 RANKED RUN HISTORY</h3><div class="mega4-history">${data.history.length?data.history.map(h=>`<div><b>${h.score}</b><span>${h.correct}✓ • ${h.mode}</span><strong>${h.rating}</strong></div>`).join(""):"<p>No ranked runs yet.</p>"}</div>`;document.getElementById("claimMegaEvent")?.addEventListener("click",()=>{if(data.event.progress>=100&&!data.event.claimed){data.event.claimed=true;data.seasonXP+=250;addLoot();save();render("event");toast("🎁 Event reward claimed!")}})}
+  function renderMega(){const el=document.getElementById("mega4Overlay");if(el?.classList.contains("open"))render("overview")}
+  const boot=setInterval(()=>{if(document.readyState!=="loading"){clearInterval(boot);build()}},100);
+  const observer=new MutationObserver(()=>{const r=document.getElementById("resultScreen");if(r&&r.classList.contains("active")&&!r.dataset.mega4){r.dataset.mega4="1";setTimeout(()=>{updateFromRun();r.dataset.mega4=""},180)}});observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:["class"]});
+  window.QuizMegaMajor={data,render,updateFromRun};
+})();
