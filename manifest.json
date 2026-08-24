@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v5.0.0 — Online Foundation",
+  "name": "Quiz Game v5.1.0 — Online Server Kit",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v5.0.0 with player identity, online-ready cloud sync, ranked systems, seasons and offline-first play.",
+  "description": "Quiz Game v5.1.0 with an optional online API server, sync queue, player identity, global leaderboard foundation and offline-first play.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
