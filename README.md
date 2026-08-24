@@ -1,23 +1,34 @@
 # Quiz Game
 
-**Version:** v5.5.0 — GLOBAL LEADERBOARD 🌍🏆
+**Version:** v5.6.0 — SERVER-AUTHORITATIVE RANKED ⚔️🛡️
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.5.0 mở rộng Online Foundation thành Global Leaderboard với phân trang, season filter, player rank và giao diện bảng xếp hạng online.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.6.0 bổ sung Ranked Online với câu hỏi, đáp án, thời gian và điểm số được xác thực bởi server.
 
-## v5.5.0 — GLOBAL LEADERBOARD
+## v5.6.0 — SERVER-AUTHORITATIVE RANKED
 
-### 🌍 Global Ranking
+### ⚔️ Ranked Online
 
-- `GET /leaderboard/global` — bảng xếp hạng công khai.
-- Pagination tối đa 100 người/trang.
-- `season` filter cho all-time hoặc season cụ thể.
-- Score, best score, games và accuracy.
-- `GET /leaderboard/me` — thứ hạng của tài khoản đang đăng nhập.
-- `GET /leaderboard/seasons` — danh sách season có dữ liệu.
-- Global Leaderboard UI ngay trên trang chủ.
-- Offline vẫn chơi bình thường; Global Leaderboard yêu cầu backend online.
+- `POST /runs/start` — server tạo ranked run và phát câu hỏi.
+- `POST /runs/:runId/answer` — server kiểm tra question ID, answer và elapsed time.
+- `POST /runs/:runId/finish` — server tính kết quả cuối cùng và lưu event authoritative.
+- Client không được tự gửi score để quyết định điểm ranked.
+- Mỗi run có `runId`, nonce, expiry và danh sách câu hỏi riêng.
+- Chỉ tài khoản đã xác thực mới được chơi Ranked Online.
+- Một player chỉ có một ranked run đang hoạt động tại một thời điểm.
+- Ranked Online UI được thêm trực tiếp vào trang chủ.
 
-### 🔐 Authentication vẫn giữ nguyên
+### 🛡️ Anti-Cheat Foundation
+
+- Server giữ đáp án đúng của ranked question bank.
+- Server tự tính điểm theo thời gian trả lời.
+- Kiểm tra answer index và question ID.
+- Chặn trả lời một câu nhiều lần.
+- Giới hạn thời gian trả lời tối thiểu để loại bỏ timestamp bất thường.
+- Run hết hạn sẽ bị từ chối.
+- Run chưa đủ câu không thể finish.
+- Score authoritative được lưu với `authoritative: true`.
+
+### 🔐 Authentication
 
 - `POST /auth/register`
 - `POST /auth/login`
@@ -29,13 +40,22 @@ Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-f
 
 Mật khẩu không lưu plaintext. Server dùng Node.js `scrypt` + salt; session token được lưu dưới dạng SHA-256 hash.
 
+### 🌍 Global Leaderboard
+
+- `GET /leaderboard/global`
+- `GET /leaderboard/me`
+- `GET /leaderboard/seasons`
+- Pagination và season filter.
+- Score, best score, games và accuracy.
+- Global Leaderboard UI.
+
 ### 🛡️ Security
 
 - Security response headers.
 - `X-Powered-By` disabled.
 - Configurable `CORS_ORIGIN` allowlist.
 - 128 KB JSON request limit.
-- Authentication rate limit.
+- Authentication và ranked-run rate limit.
 - Temporary login lockout.
 - Constant-time password hash comparison.
 - Server-side bounds cho synced score/correct/total.
@@ -65,17 +85,25 @@ TRUST_PROXY=1
 QuizOnline.configure("http://localhost:3000");
 ```
 
-Sau đó mở **🌐 ONLINE**, đăng nhập và dùng **🌍 GLOBAL LEADERBOARD**.
+Sau đó đăng nhập ở **🌐 ONLINE** và dùng **⚔️ RANKED ONLINE**.
 
 ### 💾 Offline-first
 
-Không có backend vẫn chơi được. Global Leaderboard chỉ là lớp online bổ sung và không thay thế local game/save.
+Classic/local gameplay vẫn hoạt động khi backend offline. Ranked Online bắt buộc phải có backend và tài khoản đã xác thực.
 
-## ⚠️ Giới hạn v5.5.0
+## ⚠️ Giới hạn v5.6.0
 
-Đây là **Global Leaderboard foundation**, chưa phải hệ thống competitive production hoàn chỉnh. Dữ liệu vẫn dùng JSON development-scale; score hiện vẫn bắt nguồn từ client sync nên **chưa thể coi là anti-cheat/server-authoritative scoring**. Trước khi mở ranked competition quy mô lớn cần database production, HTTPS, persistent/distributed rate limiting, audit logs, backups, monitoring, secret management và server-authoritative match validation.
+v5.6.0 đã chuyển **Ranked scoring** sang server-authoritative, nhưng backend vẫn dùng JSON development-scale. Đây chưa phải infrastructure production cho hàng nghìn người chơi đồng thời. Trước khi mở competitive scale lớn vẫn cần database production, HTTPS bắt buộc, distributed rate limiting, audit logs, backups, monitoring, secret management và xử lý abuse ở tầng hạ tầng.
 
 GitHub Pages chỉ host frontend; backend phải được deploy riêng.
+
+## v5.5.0 — GLOBAL LEADERBOARD
+
+- 🌍 Global ranking.
+- 📄 Pagination.
+- 📅 Season filter.
+- 👤 Player rank.
+- 🏆 Online leaderboard UI.
 
 ## v5.4.0 — SECURITY & ONLINE HARDENING
 
@@ -151,12 +179,13 @@ GitHub Pages chỉ host frontend; backend phải được deploy riêng.
 
 - **124+ câu hỏi**.
 - **15 chủ đề:** Tổng hợp, Khoa học, Địa lý, Lịch sử, Công nghệ, Toán, Sinh học, Vật lý, Hóa học, Vũ trụ, Văn hóa, Thể thao, Văn học, Việt Nam và Logic.
+- Ranked Online hiện dùng một server-authoritative question bank riêng để đảm bảo server biết đáp án và có thể xác minh kết quả.
 
 ## 📱 PWA / Offline
 
-- Manifest và Service Worker đã bump lên v5.5.0.
-- `global-leaderboard.js` được cache offline.
-- Game vẫn chơi được khi backend offline hoặc chưa cấu hình.
+- Manifest và Service Worker đã bump lên v5.6.0.
+- `ranked-online.js` được cache offline.
+- Game local vẫn chơi được khi backend offline.
 
 ## Công nghệ
 
@@ -179,6 +208,7 @@ GitHub Pages chỉ host frontend; backend phải được deploy riêng.
 - Node.js `crypto.scrypt`
 - Session tokens
 - JSON persistent storage (development-scale)
+- Server-authoritative ranked validation
 
 ## Cấu trúc
 
@@ -187,6 +217,8 @@ quiz-game/
 ├── backend/
 │   ├── package.json
 │   ├── server.js
+│   ├── anti-cheat.js
+│   ├── question-bank.js
 │   ├── global-leaderboard.js
 │   ├── db.json
 │   └── README.md
@@ -197,6 +229,7 @@ quiz-game/
 ├── supermajor.js
 ├── supermajor4.js
 ├── online.js
+├── ranked-online.js
 ├── global-leaderboard.js
 ├── script.js
 ├── questions.js
@@ -238,4 +271,5 @@ Frontend deploy bình thường từ branch `main` và `/ (root)`. Backend khôn
 - v5.2.0: Persistent Online — JSON Database + Score Leaderboard + Persistent Player Statistics
 - v5.3.0: Authenticated Online — Accounts + Password Hashing + Sessions + Protected Sync
 - v5.4.0: Security & Online Hardening — CORS Allowlist + Security Headers + Login Lockout + Session Revocation + Password Change + Sync Validation
-- **v5.5.0: Global Leaderboard — Global Ranking + Pagination + Season Filters + Player Rank + Online Leaderboard UI**
+- v5.5.0: Global Leaderboard — Global Ranking + Pagination + Season Filters + Player Rank + Online Leaderboard UI
+- **v5.6.0: Server-Authoritative Ranked — Authoritative Question Bank + Server Scoring + Run Validation + Anti-Cheat Foundation + Ranked Online Client**
