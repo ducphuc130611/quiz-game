@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v4.0.0 — Super Major II",
+  "name": "Quiz Game v5.0.0 — Online Foundation",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v4.0.0 with seasons, ranked rating, tournaments, daily events, loot, badges and Quiz Codex.",
+  "description": "Quiz Game v5.0.0 with player identity, online-ready cloud sync, ranked systems, seasons and offline-first play.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
