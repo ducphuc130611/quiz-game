@@ -1,52 +1,64 @@
-# Quiz Game Online Backend — v5.5.0
+# Quiz Game Online Backend — v5.6.0
 
-This optional Node.js server provides persistent JSON storage, authenticated accounts, protected player sync, security hardening and the v5.5 global leaderboard service.
+This optional Node.js server provides persistent JSON storage, authenticated accounts, protected player sync, security hardening, global leaderboard and server-authoritative ranked runs.
 
 ## Endpoints
 
 ### Authentication
 
-- `POST /auth/register` — create an account with email, username and password.
+- `POST /auth/register` — create an account.
 - `POST /auth/login` — authenticate and receive a session token.
 - `GET /auth/me` — inspect the authenticated account.
 - `POST /auth/logout` — revoke the current session.
 - `POST /auth/logout-all` — revoke every session for the account.
-- `POST /auth/change-password` — change the password and revoke other sessions.
+- `POST /auth/change-password` — change password and revoke other sessions.
 
 ### Game data
 
 - `GET /health` — health/version and online feature status.
-- `POST /players/sync` — accepts authenticated Player ID, username and pending client events.
+- `POST /players/sync` — authenticated Player ID and offline event sync.
 - `GET /leaderboard` — legacy top-100 accumulated score endpoint.
+
+### Ranked Online v5.6
+
+- `POST /runs/start` — starts an authenticated server-authoritative ranked run.
+- `POST /runs/:runId/answer` — validates a question ID, answer index and answer timing.
+- `POST /runs/:runId/finish` — validates completion and persists the authoritative result.
+
+Ranked runs use `question-bank.js`, which is server-side and contains the correct answers. The client never sends a score for a ranked result; the server calculates the score from validated answers and timing.
 
 ### Global leaderboard v5.5
 
 - `GET /leaderboard/global?season=all&limit=25&offset=0` — public paginated global ranking.
 - `GET /leaderboard/me?season=all` — authenticated player's current rank.
-- `GET /leaderboard/seasons` — list of seasons represented in synced events.
+- `GET /leaderboard/seasons` — list of seasons represented in stored events.
 
-`/leaderboard/me` requires `Authorization: Bearer <session-token>`.
+## v5.6.0 Server-Authoritative Ranked
 
-Global leaderboard rows expose rank, username, score, best score, games, accuracy and last update time. The server never exposes account email, password hash or session data through public leaderboard endpoints.
+`anti-cheat.js` contains the validation rules used by the ranked run service.
 
-## v5.5.0 Global Leaderboard
+- Server-issued run ID and nonce.
+- Server-selected question set.
+- Server-side correct answers.
+- Answer/question binding.
+- Duplicate-answer protection.
+- Minimum and maximum timing validation.
+- Run expiration.
+- Incomplete-run rejection.
+- Server-calculated score.
+- Authoritative result marker in stored events.
+- One active ranked run per player.
+- Ranked-run request rate limiting.
 
-The service is implemented in `global-leaderboard.js` and registered by `server.js`.
+This is an **anti-cheat foundation**, not a complete anti-cheat system. Client-side automation, account sharing and infrastructure-level abuse still require additional detection and monitoring.
 
-- Public ranking with pagination.
-- All-time or season-specific views.
-- Stable deterministic tie ordering.
-- Authenticated personal rank lookup.
-- Season discovery endpoint.
-- Global Leaderboard UI is provided by the frontend `global-leaderboard.js`.
-
-## v5.4.0 Security Layer
+## Security
 
 - Security response headers.
 - `X-Powered-By` disabled.
 - Configurable CORS allowlist through `CORS_ORIGIN`.
 - 128 KB JSON request body limit.
-- Authentication rate limits.
+- Authentication and ranked-run rate limits.
 - Temporary login lockout after repeated failed attempts.
 - Constant-time password hash comparison after `scrypt` derivation.
 - Session logout and password-change revocation.
@@ -88,10 +100,10 @@ The default port is `3000`.
 QuizOnline.configure("http://localhost:3000");
 ```
 
-Then open **🌐 ONLINE**, authenticate and use **🌍 GLOBAL LEADERBOARD**.
+Then open **🌐 ONLINE**, authenticate and use **⚔️ RANKED ONLINE**.
 
 ## Production status
 
-v5.5.0 is a **global leaderboard foundation**, not a production competitive service. The JSON database remains development-scale and synced scores are still client-originated. Before public ranked competition, deploy HTTPS, a production database, persistent/distributed rate limiting, audit logs, backups, monitoring, secret management and server-authoritative scoring/anti-cheat.
+v5.6.0 moves ranked scoring to the server, but the JSON database remains development-scale. Before public competitive scale, use HTTPS, a production database, distributed rate limiting, audit logs, backups, monitoring, secret management and additional abuse/anti-cheat detection.
 
 GitHub Pages only hosts the frontend; deploy the backend separately.
