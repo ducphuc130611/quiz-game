@@ -9,25 +9,52 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_FILE = path.join(__dirname, "db.json");
+const VERSION = "5.4.0";
 const TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const RATE_WINDOW_MS = 60_000;
-const RATE_LIMIT = 30;
+const GENERAL_RATE_LIMIT = 60;
+const AUTH_RATE_LIMIT = 10;
+const LOGIN_LOCKOUT_MS = 15 * 60 * 1000;
+const MAX_LOGIN_FAILURES = 5;
 const requests = new Map();
+const loginFailures = new Map();
 
-app.use(cors());
-app.use(express.json({ limit: "256kb" }));
+const allowedOrigins = new Set(
+  String(process.env.CORS_ORIGIN || "").split(",").map(v => v.trim()).filter(Boolean)
+);
+
+app.disable("x-powered-by");
+app.set("trust proxy", process.env.TRUST_PROXY === "1");
+
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  next();
+});
+
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.size === 0 || allowedOrigins.has(origin)) return callback(null, true);
+    return callback(new Error("Origin not allowed"));
+  },
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+app.use(express.json({ limit: "128kb" }));
 
 async function readDb() {
   try {
     const raw = await fs.readFile(DB_FILE, "utf8");
     return JSON.parse(raw);
   } catch {
-    return { version: "5.3.0", players: {}, accounts: {}, sessions: {} };
+    return { version: VERSION, players: {}, accounts: {}, sessions: {} };
   }
 }
 
 let db = await readDb();
-db.version = "5.3.0";
+db.version = VERSION;
 if (!db.players || typeof db.players !== "object") db.players = {};
 if (!db.accounts || typeof db.accounts !== "object") db.accounts = {};
 if (!db.sessions || typeof db.sessions !== "object") db.sessions = {};
@@ -67,7 +94,10 @@ function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
 
 function verifyPassword(password, salt, expected) {
   const actual = crypto.scryptSync(password, salt, 64).toString("hex");
-  return crypto.timingSafeEqual(Buffer.from(actual, "hex"), Buffer.from(expected, "hex"));
+  const expectedBuffer = Buffer.from(expected, "hex");
+  const actualBuffer = Buffer.from(actual, "hex");
+  if (actualBuffer.length !== expectedBuffer.length) return false;
+  return crypto.timingSafeEqual(actualBuffer, expectedBuffer);
 }
 
 function createToken() {
@@ -78,27 +108,31 @@ function tokenHash(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-function rateLimit(req, res, next) {
-  const key = req.ip || "unknown";
-  const now = Date.now();
-  const old = requests.get(key);
-  if (!old || now - old.started > RATE_WINDOW_MS) {
-    requests.set(key, { started: now, count: 1 });
-    return next();
-  }
-  old.count += 1;
-  if (old.count > RATE_LIMIT) return res.status(429).json({ error: "Too many requests" });
-  next();
+function requestRateLimit(limit) {
+  return (req, res, next) => {
+    const key = `${limit}:${req.ip || "unknown"}`;
+    const now = Date.now();
+    const old = requests.get(key);
+    if (!old || now - old.started > RATE_WINDOW_MS) {
+      requests.set(key, { started: now, count: 1 });
+      return next();
+    }
+    old.count += 1;
+    if (old.count > limit) return res.status(429).json({ error: "Too many requests" });
+    next();
+  };
 }
 
 function auth(req, res, next) {
   const header = String(req.headers.authorization || "");
   const token = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
-  const session = token ? db.sessions[tokenHash(token)] : null;
+  const hash = token ? tokenHash(token) : "";
+  const session = hash ? db.sessions[hash] : null;
   if (!session || Date.parse(session.expiresAt) <= Date.now()) {
-    if (session) delete db.sessions[tokenHash(token)];
+    if (session) delete db.sessions[hash];
     return res.status(401).json({ error: "Authentication required" });
   }
+  req.sessionHash = hash;
   req.accountId = session.accountId;
   req.playerId = session.playerId;
   next();
@@ -111,19 +145,42 @@ function publicAccount(account) {
 function normalizeEvent(event) {
   const source = event && typeof event === "object" ? event : {};
   return {
-    score: Math.max(0, safeNumber(source.score)),
-    correct: Math.max(0, safeNumber(source.correct)),
-    total: Math.max(0, safeNumber(source.total)),
+    score: Math.max(0, Math.min(1000000, safeNumber(source.score))),
+    correct: Math.max(0, Math.min(1000, safeNumber(source.correct))),
+    total: Math.max(0, Math.min(1000, safeNumber(source.total))),
     mode: String(source.mode || "unknown").slice(0, 32),
     createdAt: String(source.createdAt || new Date().toISOString()).slice(0, 40)
   };
 }
 
+function loginKey(req, email) {
+  return `${req.ip || "unknown"}:${email}`;
+}
+
+function isLocked(key) {
+  const state = loginFailures.get(key);
+  if (!state) return false;
+  if (state.lockedUntil && state.lockedUntil > Date.now()) return true;
+  if (state.lockedUntil && state.lockedUntil <= Date.now()) loginFailures.delete(key);
+  return false;
+}
+
+function recordLoginFailure(key) {
+  const state = loginFailures.get(key) || { count: 0, lockedUntil: 0 };
+  state.count += 1;
+  if (state.count >= MAX_LOGIN_FAILURES) state.lockedUntil = Date.now() + LOGIN_LOCKOUT_MS;
+  loginFailures.set(key, state);
+}
+
+function clearLoginFailures(key) {
+  loginFailures.delete(key);
+}
+
 app.get("/health", (_req, res) => {
-  res.json({ ok: true, service: "quiz-game-online", version: "5.3.0", persistence: "json", authentication: "session" });
+  res.json({ ok: true, service: "quiz-game-online", version: VERSION, persistence: "json", authentication: "session", security: "5.4" });
 });
 
-app.post("/auth/register", rateLimit, async (req, res) => {
+app.post("/auth/register", requestRateLimit(AUTH_RATE_LIMIT), async (req, res) => {
   const username = normalizeUsername(req.body?.username);
   const email = normalizeEmail(req.body?.email);
   const password = String(req.body?.password || "");
@@ -145,11 +202,17 @@ app.post("/auth/register", rateLimit, async (req, res) => {
   res.status(201).json({ ok: true, token, account: publicAccount(db.accounts[accountId]) });
 });
 
-app.post("/auth/login", rateLimit, async (req, res) => {
+app.post("/auth/login", requestRateLimit(AUTH_RATE_LIMIT), async (req, res) => {
   const email = normalizeEmail(req.body?.email);
   const password = String(req.body?.password || "");
+  const key = loginKey(req, email);
+  if (isLocked(key)) return res.status(429).json({ error: "Login temporarily locked. Try again later." });
   const account = Object.values(db.accounts).find(a => a.email === email);
-  if (!account || !verifyPassword(password, account.passwordSalt, account.passwordHash)) return res.status(401).json({ error: "Invalid email or password" });
+  if (!account || !verifyPassword(password, account.passwordSalt, account.passwordHash)) {
+    recordLoginFailure(key);
+    return res.status(401).json({ error: "Invalid email or password" });
+  }
+  clearLoginFailures(key);
   const token = createToken();
   db.sessions[tokenHash(token)] = { accountId: account.accountId, playerId: account.playerId, expiresAt: new Date(Date.now() + TOKEN_TTL_MS).toISOString() };
   await persistDb();
@@ -163,11 +226,34 @@ app.get("/auth/me", auth, (req, res) => {
 });
 
 app.post("/auth/logout", auth, async (req, res) => {
-  const header = String(req.headers.authorization || "");
-  const token = header.slice(7).trim();
-  delete db.sessions[tokenHash(token)];
+  delete db.sessions[req.sessionHash];
   await persistDb();
   res.json({ ok: true });
+});
+
+app.post("/auth/logout-all", auth, async (req, res) => {
+  for (const [hash, session] of Object.entries(db.sessions)) {
+    if (session.accountId === req.accountId) delete db.sessions[hash];
+  }
+  await persistDb();
+  res.json({ ok: true });
+});
+
+app.post("/auth/change-password", auth, requestRateLimit(AUTH_RATE_LIMIT), async (req, res) => {
+  const account = db.accounts[req.accountId];
+  const currentPassword = String(req.body?.currentPassword || "");
+  const newPassword = String(req.body?.newPassword || "");
+  if (!account || !verifyPassword(currentPassword, account.passwordSalt, account.passwordHash)) return res.status(401).json({ error: "Current password is incorrect" });
+  if (newPassword.length < 8 || newPassword.length > 128) return res.status(400).json({ error: "Password must be 8-128 characters" });
+  if (newPassword === currentPassword) return res.status(400).json({ error: "New password must be different" });
+  const credentials = hashPassword(newPassword);
+  account.passwordSalt = credentials.salt;
+  account.passwordHash = credentials.hash;
+  for (const [hash, session] of Object.entries(db.sessions)) {
+    if (session.accountId === req.accountId && hash !== req.sessionHash) delete db.sessions[hash];
+  }
+  await persistDb();
+  res.json({ ok: true, message: "Password changed. Other sessions were revoked." });
 });
 
 app.post("/players/sync", auth, async (req, res) => {
@@ -198,12 +284,20 @@ app.post("/players/sync", auth, async (req, res) => {
 app.get("/leaderboard", (_req, res) => {
   const rows = Object.values(db.players).map(player => ({ playerId: player.playerId, username: player.username, score: player.totalScore, bestScore: player.bestScore, games: player.games, accuracy: player.totalQuestions ? Math.round((player.totalCorrect / player.totalQuestions) * 10000) / 100 : 0, updatedAt: player.updatedAt }));
   rows.sort((a, b) => b.score - a.score || b.bestScore - a.bestScore);
-  res.json({ version: "5.3.0", leaderboard: rows.slice(0, 100) });
+  res.json({ version: VERSION, leaderboard: rows.slice(0, 100) });
 });
 
 setInterval(() => {
   const now = Date.now();
   for (const [hash, session] of Object.entries(db.sessions)) if (Date.parse(session.expiresAt) <= now) delete db.sessions[hash];
+  for (const [key, state] of loginFailures.entries()) if (state.lockedUntil && state.lockedUntil <= now) loginFailures.delete(key);
+  for (const [key, state] of requests.entries()) if (now - state.started > RATE_WINDOW_MS) requests.delete(key);
 }, 60 * 60 * 1000).unref();
 
-app.listen(PORT, () => console.log(`Quiz Game Online API listening on ${PORT}`));
+app.use((err, _req, res, _next) => {
+  if (err?.message === "Origin not allowed") return res.status(403).json({ error: "Origin not allowed" });
+  console.error(err);
+  res.status(500).json({ error: "Internal server error" });
+});
+
+app.listen(PORT, () => console.log(`Quiz Game Online API v${VERSION} listening on ${PORT}`));
