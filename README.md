@@ -1,32 +1,25 @@
 # Quiz Game
 
-**Version:** v5.2.0 — PERSISTENT ONLINE 🌐☁️
+**Version:** v5.3.0 — AUTHENTICATED ONLINE 🔐🌐
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.2.0 nâng Online Server Kit thành nền tảng có **persistent JSON storage**, player sync và score-based online leaderboard foundation.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.3.0 bổ sung **tài khoản online, password hashing phía server, session token, protected sync và logout**, xây trên persistent backend của v5.2.0.
 
-## v5.2.0 — PERSISTENT ONLINE
+## v5.3.0 — AUTHENTICATED ONLINE
 
-### ☁️ Persistent Online Backend
+### 🔐 Account System
 
-Thư mục `backend/` chứa server Node.js/Express tùy chọn:
+Backend hỗ trợ:
 
-- `GET /health` — kiểm tra server và persistence.
-- `POST /players/sync` — nhận Player ID, username và pending game events.
-- `GET /leaderboard` — trả về top 100 người chơi theo tổng điểm đã đồng bộ.
+- `POST /auth/register` — tạo tài khoản.
+- `POST /auth/login` — đăng nhập và nhận session token.
+- `GET /auth/me` — kiểm tra tài khoản hiện tại.
+- `POST /auth/logout` — thu hồi session.
+- `POST /players/sync` — giờ yêu cầu authentication và chỉ cho phép đồng bộ Player ID thuộc tài khoản.
+- `GET /leaderboard` — leaderboard online theo tổng điểm.
 
-Dữ liệu được lưu trong `backend/db.json`, không còn mất khi server Node.js restart trên một filesystem có thể ghi.
+Mật khẩu **không được lưu dạng plaintext**. Server dùng Node.js `scrypt` + salt và token session ngẫu nhiên được lưu dưới dạng SHA-256 hash.
 
-Mỗi player lưu:
-
-- Player ID
-- Username
-- Synced game events
-- Total score
-- Total correct answers
-- Total questions
-- Best score
-- Games synced
-- Last update time
+Session mặc định có thời hạn 30 ngày. Backend cũng có rate limit cơ bản ở các endpoint authentication.
 
 ### Chạy backend
 
@@ -44,13 +37,25 @@ Mặc định server chạy ở port `3000`.
 QuizOnline.configure("http://localhost:3000");
 ```
 
-Sau đó `QuizOnline.sync()` có thể gửi pending queue tới `/players/sync`.
+Sau đó mở **🌐 ONLINE**, tạo tài khoản/đăng nhập rồi `SYNC NOW` để đồng bộ pending queue.
 
-### ⚠️ Giới hạn v5.2.0
+### 💾 Offline-first
 
-JSON database là bước chuyển tiếp quan trọng nhưng **chưa phải production database**. Trước khi mở tài khoản toàn cầu hoặc ranked competition cần thêm database thực thụ, authentication, rate limiting, HTTPS, schema validation, backup và transactional persistence.
+Không có backend vẫn chơi được. Pending events tiếp tục được giữ local; cloud sync chỉ hoạt động khi có API endpoint và tài khoản đã xác thực.
 
-GitHub Pages vẫn chỉ host frontend; backend phải được deploy riêng.
+### ⚠️ Giới hạn v5.3.0
+
+Đây là **authentication foundation**, chưa phải hệ thống production hoàn chỉnh. JSON database vẫn là development-scale storage. Trước khi mở ranked competition công khai cần thêm database production, HTTPS deployment, email verification, password reset, stronger rate limiting, audit logs, backups, CSRF/origin policy và anti-cheat/server-authoritative scoring.
+
+GitHub Pages chỉ host frontend; backend phải được deploy riêng.
+
+## v5.2.0 — PERSISTENT ONLINE
+
+- ☁️ Persistent JSON database.
+- 🏆 Score-based online leaderboard.
+- 📊 Persistent player statistics.
+- 🔄 Serialized database writes.
+- ❤️ Health check với persistence status.
 
 ## v5.1.0 — ONLINE SERVER KIT
 
@@ -109,8 +114,8 @@ GitHub Pages vẫn chỉ host frontend; backend phải được deploy riêng.
 
 ## 📱 PWA / Offline
 
-- `manifest.json` lên v5.2.0.
-- Service Worker dùng cache `quiz-game-v5.2.0`.
+- `manifest.json` lên v5.3.0.
+- Service Worker dùng cache `quiz-game-v5.3.0`.
 - Game vẫn chơi được khi backend offline hoặc chưa cấu hình.
 
 ## Công nghệ
@@ -131,6 +136,8 @@ GitHub Pages vẫn chỉ host frontend; backend phải được deploy riêng.
 - Node.js 18+
 - Express
 - CORS
+- Node.js `crypto.scrypt`
+- Session tokens
 - JSON persistent storage (development-scale)
 
 ## Cấu trúc
@@ -186,4 +193,5 @@ Frontend vẫn deploy bình thường từ branch `main` và `/ (root)`. Backend
 - v4.0.0: Super Major II — Seasons + Ranked Rating + Weekly Tournament + Daily Event + Loot Vault + Seasonal Badges + Quiz Codex
 - v5.0.0: Online Foundation — Player Identity + Player ID + Cloud Adapter + Sync Queue + Online Hub + Offline-first Architecture
 - v5.1.0: Online Server Kit — Runnable Node.js API + Health Check + Player Sync + Online Leaderboard Foundation
-- **v5.2.0: Persistent Online — JSON Database + Score Leaderboard + Persistent Player Statistics**
+- v5.2.0: Persistent Online — JSON Database + Score Leaderboard + Persistent Player Statistics
+- **v5.3.0: Authenticated Online — Accounts + Password Hashing + Sessions + Protected Sync**
