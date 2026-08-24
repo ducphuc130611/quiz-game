@@ -1,12 +1,25 @@
 # Quiz Game
 
-**Version:** v1.0.1 — Quality Update 🚀
+**Version:** v1.0.2 — Statistics Update 🚀
 
 Game quiz trắc nghiệm chạy trên trình duyệt, tối ưu cho GitHub Pages và có thể cài đặt như một web app.
 
-## v1.0.1 — Quality Update
+## v1.0.2 — Statistics Update
 
-Bản cập nhật sau v1.0.0 tập trung vào trải nghiệm chơi và khả năng điều khiển.
+Bản cập nhật này bổ sung hệ thống **Lifetime Statistics**, giúp người chơi theo dõi tiến trình dài hạn ngay trong Profile.
+
+### Lifetime Statistics
+
+- 📊 Tổng số ván đã chơi.
+- ❓ Tổng số câu hỏi đã trả lời.
+- ✅ Tổng số câu đúng.
+- 🎯 Độ chính xác tổng thể.
+- 💯 Tổng điểm tích lũy.
+- 🏆 Điểm cao nhất.
+- 🎯 Độ chính xác tốt nhất trong một ván.
+- 🔥 Combo cao nhất.
+- ⚡ Speed Bonus cao nhất.
+- 💾 Dữ liệu được lưu bằng `localStorage`.
 
 ### Keyboard Controls
 
@@ -16,7 +29,6 @@ Bản cập nhật sau v1.0.0 tập trung vào trải nghiệm chơi và khả n
 - ⌨️ Phím `4` chọn đáp án D.
 - ⏎ `Enter` bắt đầu game từ trang chủ hoặc chơi lại từ màn hình kết quả.
 - ⎋ `Esc` đóng Shop, Profile hoặc Leaderboard và quay về trang chủ.
-- Các phím chọn đáp án chỉ hoạt động khi đáp án còn có thể chọn, tránh trả lời hai lần.
 
 ### Core Quiz
 
@@ -65,6 +77,7 @@ Bản cập nhật sau v1.0.0 tập trung vào trải nghiệm chơi và khả n
 - 🏆 High Score.
 - 🏅 Achievement progress.
 - 🪙 Coins và số item đã mua.
+- 📊 Lifetime Statistics.
 
 ### Leaderboard
 
@@ -83,7 +96,7 @@ Bản cập nhật sau v1.0.0 tập trung vào trải nghiệm chơi và khả n
 - 📱 Có `manifest.json` để hỗ trợ cài đặt như web app.
 - 📦 Có Service Worker để cache các file game.
 - 📴 Sau khi cache thành công, game có thể tiếp tục mở khi mất mạng.
-- 🔄 Cache được version hóa theo `v1.0.1`.
+- 🔄 Cache được version hóa theo `v1.0.2`.
 
 ## Công nghệ
 
@@ -121,6 +134,7 @@ quiz-game/
 ├── shop.js
 ├── profile.js
 ├── keyboard.js
+├── stats.js
 ├── manifest.json
 ├── sw.js
 └── README.md
@@ -136,4 +150,5 @@ quiz-game/
 - v0.0.6: Profile
 - v0.0.7: Leaderboard
 - v1.0.0: Official Release + Installable/Offline Ready
-- **v1.0.1: Quality Update + Keyboard Controls**
+- v1.0.1: Quality Update + Keyboard Controls
+- **v1.0.2: Statistics Update + Lifetime Player Stats**
