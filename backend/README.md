@@ -1,6 +1,16 @@
-# Quiz Game Online Backend — v5.6.0
+# Quiz Game Online Backend — v5.8.0
 
-This optional Node.js server provides persistent JSON storage, authenticated accounts, protected player sync, security hardening, global leaderboard and server-authoritative ranked runs.
+This optional Node.js server provides authenticated accounts, protected player sync, security hardening, global leaderboard and server-authoritative ranked runs. v5.8 adds a database adapter and migration/backup tooling so the storage layer can be moved away from direct `db.json` access without losing existing data.
+
+## v5.8.0 Database Layer
+
+- `database.js` — persistent storage adapter around the existing JSON store.
+- `migrate.js` — migration entry point with an automatic pre-migration backup.
+- `npm run migrate` — validates and rewrites the current database using the v5.8 schema metadata.
+- `backups/` — generated backup directory; do not commit generated backups.
+- `.env.example` — deployment settings for the current JSON mode and future PostgreSQL deployment.
+
+The current server runtime still uses `db.json` directly for compatibility. PostgreSQL is the declared production target, but it is **not falsely advertised as active in v5.8.0**. The next database integration step must move the runtime read/write operations behind this adapter and add real PostgreSQL migrations before production cutover.
 
 ## Endpoints
 
@@ -19,91 +29,66 @@ This optional Node.js server provides persistent JSON storage, authenticated acc
 - `POST /players/sync` — authenticated Player ID and offline event sync.
 - `GET /leaderboard` — legacy top-100 accumulated score endpoint.
 
-### Ranked Online v5.6
+### Ranked Online
 
 - `POST /runs/start` — starts an authenticated server-authoritative ranked run.
 - `POST /runs/:runId/answer` — validates a question ID, answer index and answer timing.
 - `POST /runs/:runId/finish` — validates completion and persists the authoritative result.
 
-Ranked runs use `question-bank.js`, which is server-side and contains the correct answers. The client never sends a score for a ranked result; the server calculates the score from validated answers and timing.
+## Storage and migration
 
-### Global leaderboard v5.5
+Current runtime storage:
 
-- `GET /leaderboard/global?season=all&limit=25&offset=0` — public paginated global ranking.
-- `GET /leaderboard/me?season=all` — authenticated player's current rank.
-- `GET /leaderboard/seasons` — list of seasons represented in stored events.
+```text
+backend/db.json
+       ↓
+v5.8 database adapter
+       ↓
+future PostgreSQL adapter
+```
 
-## v5.6.0 Server-Authoritative Ranked
+Run locally:
 
-`anti-cheat.js` contains the validation rules used by the ranked run service.
+```bash
+cd backend
+npm install
+npm run check
+npm run migrate
+npm start
+```
 
-- Server-issued run ID and nonce.
-- Server-selected question set.
-- Server-side correct answers.
-- Answer/question binding.
-- Duplicate-answer protection.
-- Minimum and maximum timing validation.
-- Run expiration.
-- Incomplete-run rejection.
-- Server-calculated score.
-- Authoritative result marker in stored events.
-- One active ranked run per player.
-- Ranked-run request rate limiting.
+`npm run migrate` creates a timestamped backup before updating the database schema metadata.
 
-This is an **anti-cheat foundation**, not a complete anti-cheat system. Client-side automation, account sharing and infrastructure-level abuse still require additional detection and monitoring.
-
-## Security
-
-- Security response headers.
-- `X-Powered-By` disabled.
-- Configurable CORS allowlist through `CORS_ORIGIN`.
-- 128 KB JSON request body limit.
-- Authentication and ranked-run rate limits.
-- Temporary login lockout after repeated failed attempts.
-- Constant-time password hash comparison after `scrypt` derivation.
-- Session logout and password-change revocation.
-- Expired-session and rate-limit cleanup.
-- Server-side numeric bounds for synced event fields.
-- Generic server errors.
-
-Passwords are never stored as plaintext. Session tokens are random values; only SHA-256 token hashes are stored in `db.json`.
+For production, configure a real persistent database service and complete the PostgreSQL runtime adapter before switching `DATABASE_MODE` away from `json`.
 
 ## Environment
 
 ```text
 PORT=3000
 CORS_ORIGIN=https://your-github-pages-site.example
-TRUST_PROXY=1
+TRUST_PROXY=0
+DATABASE_MODE=json
+DATABASE_URL=postgresql://quiz_user:change_me@localhost:5432/quiz_game
+DATABASE_SSL=false
 ```
 
-Leave `CORS_ORIGIN` empty for local development if needed. Set an explicit allowlist in deployment.
+Never commit real database credentials.
 
-## Persistent storage
+## Security
 
-Player and account data are stored in `backend/db.json`.
-
-Only the latest 500 events per player are retained. Writes are serialized to avoid overlapping file writes.
-
-## Run
-
-```bash
-cd backend
-npm install
-npm start
-```
-
-The default port is `3000`.
-
-## Connect the frontend
-
-```js
-QuizOnline.configure("http://localhost:3000");
-```
-
-Then open **🌐 ONLINE**, authenticate and use **⚔️ RANKED ONLINE**.
+- Security response headers.
+- `X-Powered-By` disabled.
+- Configurable CORS allowlist.
+- Request body size limit.
+- Authentication and ranked-run rate limits.
+- Login lockout after repeated failures.
+- `scrypt` password hashing and constant-time comparison.
+- Session revocation.
+- Server-side validation for synced event fields.
+- Server-authoritative ranked scoring.
 
 ## Production status
 
-v5.6.0 moves ranked scoring to the server, but the JSON database remains development-scale. Before public competitive scale, use HTTPS, a production database, distributed rate limiting, audit logs, backups, monitoring, secret management and additional abuse/anti-cheat detection.
+v5.8 is a **database infrastructure transition release**, not a claim that the current JSON storage is production-scale. Before opening competitive play to a large public audience, the runtime still needs PostgreSQL integration, transactional writes, indexes, backups, monitoring, distributed rate limiting, secret management and additional abuse detection.
 
-GitHub Pages only hosts the frontend; deploy the backend separately.
+GitHub Pages hosts the frontend; deploy the backend and its database separately.
