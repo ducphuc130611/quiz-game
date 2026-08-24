@@ -8,10 +8,10 @@ Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, có PWA/offli
 
 ### 📚 Huge Question Expansion
 
-- **160+ câu hỏi** khi kết hợp ngân hàng cũ và content pack mới.
+- **124+ câu hỏi** khi kết hợp ngân hàng cũ và content pack mới.
 - **15 chủ đề:** Tổng hợp, Khoa học, Địa lý, Lịch sử, Công nghệ, Toán, Sinh học, Vật lý, Hóa học, Vũ trụ, Văn hóa, Thể thao, Văn học, Việt Nam và Logic.
-- Mỗi chủ đề mới có thêm 10 câu hỏi.
-- Hệ thống chọn câu hỏi hiện tại tự động dùng toàn bộ `QUESTION_BANK`, nên các mode cũ được hưởng lợi ngay mà không cần viết lại logic game.
+- 10 chủ đề mới được bổ sung, mỗi chủ đề có 10 câu hỏi.
+- Hệ thống chọn câu hỏi dùng toàn bộ `QUESTION_BANK`, nên các mode cũ tự động có thêm nội dung.
 - Daily Challenge vẫn dùng cách trộn cố định theo ngày.
 
 ### 🎮 Game Modes
@@ -37,7 +37,7 @@ Daily Quest, Daily Streak, XP, Level, Rank, Achievement, Coins, Shop, Profile, S
 
 ### 💾 Save & Compatibility
 
-Content pack mới là module độc lập `expansion-content.js`: nó bổ sung câu hỏi vào `QUESTION_BANK` thay vì ghi đè ngân hàng cũ. Điều này giúp giữ tương thích với các hệ thống mode hiện tại.
+Content pack mới là module độc lập `expansion-content.js`: nó bổ sung câu hỏi vào `QUESTION_BANK` thay vì ghi đè ngân hàng cũ. Điều này giúp giữ tương thích với logic game hiện tại.
 
 ## 🌎 Question Categories
 
@@ -120,4 +120,4 @@ quiz-game/
 - v1.0.1: Quality Update + Keyboard Controls
 - v1.0.2: Statistics Update + Lifetime Player Stats
 - v2.0.0: The Big Update — Game Modes + Power-ups + Daily Quest + Central v2 Save
-- **v2.1.0: Mega Content Update — 160+ Questions + 15 Categories**
+- **v2.1.0: Mega Content Update — 124+ Questions + 15 Categories**
