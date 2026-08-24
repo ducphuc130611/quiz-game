@@ -1,75 +1,73 @@
 # Quiz Game
 
-**Version:** v4.0.0 — Super Major II 🚀🌠
+**Version:** v5.0.0 — Online Foundation 🌐🚀
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first và giờ có thêm một lớp **Season Meta** phía trên toàn bộ progression cũ.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.0.0 bổ sung **Online Foundation**: định danh người chơi, Player ID ổn định, hàng đợi đồng bộ, cloud adapter và Online Hub, trong khi game vẫn chơi đầy đủ khi offline.
 
-## v4.0.0 — SUPER MAJOR II
+## v5.0.0 — ONLINE FOUNDATION
 
-### 🌠 Season HQ
+### 🌐 Online Hub
 
-Mở **SEASON HQ** ngay trên trang chủ để quản lý hệ thống endgame mới:
+Trang chủ có nút **ONLINE** để quản lý danh tính online:
 
-- 🏅 Ranked Rating: từ 800–2500.
-- 🥉 Bronze → 🥈 Silver → 🥇 Gold → 💠 Platinum → 💎 Diamond → 👑 Master → 🌌 Grandmaster.
-- 🏆 Weekly Tournament Score.
-- 📅 Daily Event Progress.
-- 🎁 Loot Vault gồm 12 vật phẩm sưu tầm.
-- 🏅 10 Seasonal Badges.
-- 📖 Quiz Codex gồm 12 discoveries.
-- 📜 Ranked Run History tối đa 20 lượt.
-- ⭐ Season XP.
+- 🆔 Player ID duy nhất.
+- 👤 Username tối đa 16 ký tự.
+- ☁️ Sync Now qua API backend tùy cấu hình.
+- 📦 Export Online Profile để backup.
+- 📡 Pending Sync Queue giữ các sự kiện chưa đồng bộ.
+- 🟢 Connected / 🟠 Retry / ⚪ Offline-first status.
 
-### 🏅 Ranked Rating
+### ☁️ Cloud Adapter
 
-Mỗi ván hoàn thành tạo ra thay đổi Rating dựa trên điểm số và kết quả. Rating được giới hạn để tránh tăng vô hạn và xác định Division hiện tại.
+`online.js` cung cấp API adapter:
 
-### 🏆 Weekly Tournament
+- `QuizOnline.sync()` — đồng bộ dữ liệu đang chờ.
+- `QuizOnline.queue(type, payload)` — xếp sự kiện vào hàng đợi.
+- `QuizOnline.configure(apiBase)` — cấu hình URL backend.
+- `QuizOnline.isConfigured()` — kiểm tra backend đã cấu hình hay chưa.
 
-Mỗi tuần có một bảng điểm tournament cục bộ:
+Endpoint sync dự kiến:
 
-- Tournament Runs
-- Wins
-- Weekly Score
-- Best Run
+```text
+POST <API_BASE>/players/sync
+```
 
-Dữ liệu reset theo tuần, nhưng Rating và bộ sưu tập mùa vẫn được giữ.
+Payload gồm Player ID, username và các sự kiện đang chờ.
 
-### 🌠 Daily Event
+> **Lưu ý kiến trúc:** GitHub Pages chỉ host frontend tĩnh, vì vậy v5.0.0 đã chuẩn bị đầy đủ lớp client/backend adapter nhưng **chưa tự tạo một server cloud thật**. Khi có backend, chỉ cần cấu hình `QuizOnline.configure("https://your-api.example")`. Không giả mạo leaderboard online khi chưa có server.
 
-Mỗi ngày có một event progress riêng. Hoàn thành 100% sẽ mở khóa phần thưởng gồm Season XP và loot.
+### 🛡️ Offline-first
 
-### 🎁 Loot Vault
+Nếu không có backend:
 
-12 loot items được mở ngẫu nhiên qua các ván và event. Collection được lưu độc lập với Shop và Relics của v3.
-
-### 📖 Quiz Codex
-
-12 discovery milestones theo dõi các mốc lớn như:
-
-- 10 runs
-- 100 speed bonus
-- Combo 15
-- Survival
-- 250 câu đúng
-- 10.000 điểm
-- 5 loot
-- 10 tournament runs
-- Rating 1250/1500
-- Daily Event
-- 5.000 Season XP
-
-### 🏅 Seasonal Badges
-
-10 badge milestones tự động mở khóa theo Rating, Tournament, Event, Loot và Season XP.
+- Game vẫn hoạt động bình thường.
+- Player ID vẫn được lưu local.
+- Sự kiện được đưa vào pending queue.
+- Có thể export profile.
+- Không mất gameplay vì lỗi mạng.
 
 ### 💾 Save Isolation
 
-v4 dùng key riêng `quizGame_v400_super2`, không ghi đè trực tiếp save v3/v2. Hệ thống tự reset phần dữ liệu theo mùa/tuần/ngày khi bước sang chu kỳ mới.
+v5 dùng các key riêng:
+
+- `quizGame_v500_online`
+- `quizGame_v500_config`
+
+Không ghi đè trực tiếp save v4/v3/v2.
+
+## v4.0.0 — SUPER MAJOR II
+
+- 🏅 Ranked Rating 800–2500.
+- 🥉 Bronze → 🥈 Silver → 🥇 Gold → 💠 Platinum → 💎 Diamond → 👑 Master → 🌌 Grandmaster.
+- 🏆 Weekly Tournament.
+- 📅 Daily Event.
+- 🎁 Loot Vault 12 items.
+- 🏅 Seasonal Badges.
+- 📖 Quiz Codex.
+- 📜 Ranked Run History.
+- ⭐ Season XP.
 
 ## v3.0.0 + Existing Systems
-
-Toàn bộ hệ thống cũ vẫn được giữ:
 
 - 🌌 Player Hub
 - 🗺️ Campaign 30 chapters
@@ -97,9 +95,9 @@ Toàn bộ hệ thống cũ vẫn được giữ:
 
 ## 📱 PWA / Offline
 
-- `manifest.json` lên v4.0.0.
-- Service Worker dùng cache `quiz-game-v4.0.0`.
-- `supermajor4.js` và `supermajor4.css` được cache để Season HQ hoạt động offline.
+- `manifest.json` lên v5.0.0.
+- Service Worker dùng cache `quiz-game-v5.0.0`.
+- Online Foundation cũng được cache để Online Hub hoạt động offline.
 
 ## Công nghệ
 
@@ -107,9 +105,11 @@ Toàn bộ hệ thống cũ vẫn được giữ:
 - CSS3
 - JavaScript thuần
 - LocalStorage
+- Fetch API
+- Web Crypto API
 - Service Worker API
 - Web App Manifest
-- Không cần backend.
+- Không cần backend để chơi.
 - Không dùng thư viện ngoài.
 - Chạy được trên GitHub Pages.
 
@@ -134,6 +134,7 @@ quiz-game/
 ├── supermajor4.css
 ├── supermajor.js
 ├── supermajor4.js
+├── online.js
 ├── script.js
 ├── questions.js
 ├── expansion-content.js
@@ -164,4 +165,5 @@ quiz-game/
 - v2.0.0: The Big Update — Game Modes + Power-ups + Daily Quest + Central v2 Save
 - v2.1.0: Mega Content Update — 124+ Questions + 15 Categories
 - v3.0.0: Super Major Update — Player Hub + Campaign + Mastery + Relics + Weekly Missions + History + Settings
-- **v4.0.0: Super Major II — Seasons + Ranked Rating + Weekly Tournament + Daily Event + Loot Vault + Seasonal Badges + Quiz Codex**
+- v4.0.0: Super Major II — Seasons + Ranked Rating + Weekly Tournament + Daily Event + Loot Vault + Seasonal Badges + Quiz Codex
+- **v5.0.0: Online Foundation — Player Identity + Player ID + Cloud Adapter + Sync Queue + Online Hub + Offline-first Architecture**
