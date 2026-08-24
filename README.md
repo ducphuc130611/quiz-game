@@ -1,10 +1,25 @@
 # Quiz Game
 
-**Version:** v5.3.0 — AUTHENTICATED ONLINE 🔐🌐
+**Version:** v5.4.0 — SECURITY & ONLINE HARDENING 🛡️🌐
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.3.0 bổ sung **tài khoản online, password hashing phía server, session token, protected sync và logout**, xây trên persistent backend của v5.2.0.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.4.0 củng cố backend online bằng security headers, CORS allowlist, rate limiting riêng cho authentication, login lockout, session revocation, password change và validation dữ liệu sync.
 
-## v5.3.0 — AUTHENTICATED ONLINE
+## v5.4.0 — SECURITY & ONLINE HARDENING
+
+### 🛡️ Backend Security
+
+- Security response headers.
+- `X-Powered-By` disabled.
+- Configurable `CORS_ORIGIN` allowlist.
+- 128 KB JSON request limit.
+- Authentication rate limit.
+- Temporary login lockout after repeated failures.
+- Constant-time password hash comparison.
+- `POST /auth/logout-all` để thu hồi toàn bộ session.
+- `POST /auth/change-password` để đổi mật khẩu và thu hồi các session khác.
+- Server-side bounds cho synced score/correct/total.
+- Generic 500 errors không trả chi tiết exception.
+- Cleanup session/rate-limit state định kỳ.
 
 ### 🔐 Account System
 
@@ -13,13 +28,13 @@ Backend hỗ trợ:
 - `POST /auth/register` — tạo tài khoản.
 - `POST /auth/login` — đăng nhập và nhận session token.
 - `GET /auth/me` — kiểm tra tài khoản hiện tại.
-- `POST /auth/logout` — thu hồi session.
-- `POST /players/sync` — giờ yêu cầu authentication và chỉ cho phép đồng bộ Player ID thuộc tài khoản.
+- `POST /auth/logout` — thu hồi session hiện tại.
+- `POST /auth/logout-all` — thu hồi mọi session.
+- `POST /auth/change-password` — đổi mật khẩu.
+- `POST /players/sync` — yêu cầu authentication và chỉ cho phép đồng bộ Player ID thuộc tài khoản.
 - `GET /leaderboard` — leaderboard online theo tổng điểm.
 
 Mật khẩu **không được lưu dạng plaintext**. Server dùng Node.js `scrypt` + salt và token session ngẫu nhiên được lưu dưới dạng SHA-256 hash.
-
-Session mặc định có thời hạn 30 ngày. Backend cũng có rate limit cơ bản ở các endpoint authentication.
 
 ### Chạy backend
 
@@ -30,6 +45,16 @@ npm start
 ```
 
 Mặc định server chạy ở port `3000`.
+
+### Environment
+
+```text
+PORT=3000
+CORS_ORIGIN=https://your-github-pages-site.example
+TRUST_PROXY=1
+```
+
+`CORS_ORIGIN` nên được cấu hình thành allowlist cụ thể khi deploy. Chỉ bật `TRUST_PROXY=1` khi backend thực sự nằm sau reverse proxy đáng tin cậy.
 
 ### Kết nối frontend
 
@@ -43,11 +68,19 @@ Sau đó mở **🌐 ONLINE**, tạo tài khoản/đăng nhập rồi `SYNC NOW`
 
 Không có backend vẫn chơi được. Pending events tiếp tục được giữ local; cloud sync chỉ hoạt động khi có API endpoint và tài khoản đã xác thực.
 
-### ⚠️ Giới hạn v5.3.0
+### ⚠️ Giới hạn v5.4.0
 
-Đây là **authentication foundation**, chưa phải hệ thống production hoàn chỉnh. JSON database vẫn là development-scale storage. Trước khi mở ranked competition công khai cần thêm database production, HTTPS deployment, email verification, password reset, stronger rate limiting, audit logs, backups, CSRF/origin policy và anti-cheat/server-authoritative scoring.
+Đây là **security hardening foundation**, chưa phải hệ thống production hoàn chỉnh. JSON database vẫn là development-scale storage. Trước khi mở ranked competition công khai cần database production, HTTPS deployment, email verification, password reset, persistent/distributed rate limiting, audit logs, backups, monitoring, secret management và server-authoritative scoring/anti-cheat.
 
 GitHub Pages chỉ host frontend; backend phải được deploy riêng.
+
+## v5.3.0 — AUTHENTICATED ONLINE
+
+- 👤 Accounts.
+- 🔐 Password hashing.
+- 🎟️ Session authentication.
+- ☁️ Protected player sync.
+- 🚪 Logout.
 
 ## v5.2.0 — PERSISTENT ONLINE
 
@@ -114,8 +147,8 @@ GitHub Pages chỉ host frontend; backend phải được deploy riêng.
 
 ## 📱 PWA / Offline
 
-- `manifest.json` lên v5.3.0.
-- Service Worker dùng cache `quiz-game-v5.3.0`.
+- `manifest.json` lên v5.4.0.
+- Service Worker dùng cache cần được bump lên v5.4.0 khi frontend cache được cập nhật.
 - Game vẫn chơi được khi backend offline hoặc chưa cấu hình.
 
 ## Công nghệ
@@ -194,4 +227,5 @@ Frontend vẫn deploy bình thường từ branch `main` và `/ (root)`. Backend
 - v5.0.0: Online Foundation — Player Identity + Player ID + Cloud Adapter + Sync Queue + Online Hub + Offline-first Architecture
 - v5.1.0: Online Server Kit — Runnable Node.js API + Health Check + Player Sync + Online Leaderboard Foundation
 - v5.2.0: Persistent Online — JSON Database + Score Leaderboard + Persistent Player Statistics
-- **v5.3.0: Authenticated Online — Accounts + Password Hashing + Sessions + Protected Sync**
+- v5.3.0: Authenticated Online — Accounts + Password Hashing + Sessions + Protected Sync
+- **v5.4.0: Security & Online Hardening — CORS Allowlist + Security Headers + Login Lockout + Session Revocation + Password Change + Sync Validation**
