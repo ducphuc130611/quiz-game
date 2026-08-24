@@ -1,10 +1,18 @@
 # Quiz Game
 
-**Version:** v2.0.0 — The Big Update 🚀
+**Version:** v2.1.0 — Mega Content Update 🚀
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, có PWA/offline cache và nay có nhiều chế độ chơi cùng hệ thống Power-up, Daily Quest và tiến trình mở rộng.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, có PWA/offline cache và nay có một kho câu hỏi lớn hơn nhiều.
 
-## v2.0.0 — THE BIG UPDATE
+## v2.1.0 — MEGA CONTENT UPDATE
+
+### 📚 Huge Question Expansion
+
+- **160+ câu hỏi** khi kết hợp ngân hàng cũ và content pack mới.
+- **15 chủ đề:** Tổng hợp, Khoa học, Địa lý, Lịch sử, Công nghệ, Toán, Sinh học, Vật lý, Hóa học, Vũ trụ, Văn hóa, Thể thao, Văn học, Việt Nam và Logic.
+- Mỗi chủ đề mới có thêm 10 câu hỏi.
+- Hệ thống chọn câu hỏi hiện tại tự động dùng toàn bộ `QUESTION_BANK`, nên các mode cũ được hưởng lợi ngay mà không cần viết lại logic game.
+- Daily Challenge vẫn dùng cách trộn cố định theo ngày.
 
 ### 🎮 Game Modes
 
@@ -13,70 +21,47 @@ Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, có PWA/offli
 - 🛡️ **Survival:** tối đa 20 câu, sai một lần sẽ kết thúc ván.
 - 🔥 **Combo Rush:** 12 câu, 10 giây/câu, ưu tiên xây combo.
 - ⏱️ **Time Attack:** 60 giây, trả lời càng nhiều càng tốt.
-- 📅 **Daily Challenge:** bộ câu hỏi được trộn theo ngày và có thưởng tiến trình Daily.
+- 📅 **Daily Challenge:** bộ câu hỏi được trộn theo ngày.
 
 ### 🧩 Power-ups
 
-- 💡 **50/50:** loại 2 đáp án sai.
-- ⏸️ **Freeze:** đóng băng thời gian 5 giây.
-- ✖️ **Double:** nhân đôi điểm của câu đúng tiếp theo.
-- 🛡️ **Shield:** bảo vệ một lần sai hoặc hết giờ.
-- 🔄 **Reroll:** đổi câu hỏi hiện tại.
+- 💡 50/50
+- ⏸️ Freeze
+- ✖️ Double
+- 🛡️ Shield
+- 🔄 Reroll
 
-Power-up có số lượng riêng, được lưu trong hệ thống save v2 và không thể dùng khi đáp án đã bị khóa.
+### 🎯 Daily Quest & Progression
 
-### 🎯 Daily Quest
+Daily Quest, Daily Streak, XP, Level, Rank, Achievement, Coins, Shop, Profile, Statistics và Local Leaderboard tiếp tục hoạt động trên nền hệ thống v2.
 
-Mỗi ngày có 4 mục tiêu:
+### 💾 Save & Compatibility
 
-- Chơi 2 ván.
-- Trả lời đúng 15 câu.
-- Đạt combo 5.
-- Tích lũy 1.000 điểm.
+Content pack mới là module độc lập `expansion-content.js`: nó bổ sung câu hỏi vào `QUESTION_BANK` thay vì ghi đè ngân hàng cũ. Điều này giúp giữ tương thích với các hệ thống mode hiện tại.
 
-Hoàn thành Daily Quest nhận **+100 XP, +100 Coins, 1 Double Power-up và 1 Freeze Power-up**, đồng thời tăng Daily Streak.
+## 🌎 Question Categories
 
-### 💾 Central v2 Save
+1. Tổng hợp
+2. Khoa học
+3. Địa lý
+4. Lịch sử
+5. Công nghệ
+6. Toán học
+7. Sinh học
+8. Vật lý
+9. Hóa học
+10. Vũ trụ
+11. Văn hóa
+12. Thể thao
+13. Văn học
+14. Việt Nam
+15. Logic
 
-`v2-system.js` quản lý dữ liệu v2 trong một save riêng:
+## 📱 PWA / Offline
 
-- Power-ups.
-- Mode statistics.
-- Daily Challenge.
-- Daily Quest.
-- Streak.
-- Theme state.
-- Save version/migration-ready structure.
-
-Dữ liệu v0.x/v1.x vẫn được giữ nguyên để không làm mất XP, Coins, Profile, Achievement hoặc Leaderboard cũ.
-
-### 🔥 Hệ thống cũ vẫn giữ nguyên
-
-- Core Quiz.
-- Combo + Bonus.
-- XP + Level + Rank.
-- Achievement.
-- Coins + Shop.
-- Profile.
-- Local Leaderboard.
-- Lifetime Statistics.
-- Keyboard Controls.
-- PWA + Offline cache.
-
-### 🌎 Question Categories
-
-- Tổng hợp.
-- Khoa học.
-- Địa lý.
-- Lịch sử.
-- Công nghệ.
-
-### 📱 PWA / Offline
-
-- Có `manifest.json`.
-- Có Service Worker.
-- Cache được version hóa thành `quiz-game-v2.0.0`.
-- Có thể tiếp tục mở game khi mất mạng sau khi cache thành công.
+- `manifest.json` đã lên v2.1.0.
+- Service Worker dùng cache `quiz-game-v2.1.0`.
+- `expansion-content.js` được cache để kho câu hỏi mới hoạt động offline.
 
 ## Công nghệ
 
@@ -92,15 +77,14 @@ Dữ liệu v0.x/v1.x vẫn được giữ nguyên để không làm mất XP, C
 
 ## Chạy local
 
-Có thể mở `index.html` trực tiếp để chơi. PWA/Service Worker cần HTTPS hoặc localhost theo trình duyệt.
+Mở `index.html` để chơi. PWA/Service Worker cần HTTPS hoặc localhost theo trình duyệt.
 
 ## GitHub Pages
 
-1. Vào repository trên GitHub.
-2. Mở **Settings → Pages**.
-3. Chọn **Deploy from a branch**.
-4. Chọn branch `main` và thư mục `/ (root)`.
-5. Lưu và chờ GitHub Pages triển khai.
+1. Vào **Settings → Pages**.
+2. Chọn **Deploy from a branch**.
+3. Chọn branch `main` và `/ (root)`.
+4. Save và chờ GitHub Pages deploy.
 
 ## Cấu trúc
 
@@ -110,6 +94,7 @@ quiz-game/
 ├── style.css
 ├── script.js
 ├── questions.js
+├── expansion-content.js
 ├── achievements.js
 ├── leaderboard.js
 ├── shop.js
@@ -134,4 +119,5 @@ quiz-game/
 - v1.0.0: Official Release + Installable/Offline Ready
 - v1.0.1: Quality Update + Keyboard Controls
 - v1.0.2: Statistics Update + Lifetime Player Stats
-- **v2.0.0: The Big Update — Game Modes + Power-ups + Daily Quest + Central v2 Save**
+- v2.0.0: The Big Update — Game Modes + Power-ups + Daily Quest + Central v2 Save
+- **v2.1.0: Mega Content Update — 160+ Questions + 15 Categories**
