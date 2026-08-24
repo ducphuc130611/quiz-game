@@ -1,75 +1,93 @@
 # Quiz Game
 
-**Version:** v3.0.0 — Super Major Update 🚀🌌
+**Version:** v4.0.0 — Super Major II 🚀🌠
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, có PWA/offline cache và một lớp meta-progression lớn giúp mỗi ván đóng góp vào hành trình dài hạn của người chơi.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first và giờ có thêm một lớp **Season Meta** phía trên toàn bộ progression cũ.
 
-## v3.0.0 — SUPER MAJOR UPDATE
+## v4.0.0 — SUPER MAJOR II
 
-### 🌌 Player Hub
+### 🌠 Season HQ
 
-Mở **SUPER HUB** ngay trên trang chủ để xem toàn bộ tiến trình:
+Mở **SEASON HQ** ngay trên trang chủ để quản lý hệ thống endgame mới:
 
-- 📊 Lifetime game/correct/best score/best combo.
-- 🏅 Dynamic Player Title với 10 danh hiệu.
-- 🗺️ Campaign 30 chapters.
-- 📚 Category Mastery cho 14 nhóm nội dung.
-- 🗝️ Relic Collection gồm 25 relics.
-- 📅 Weekly Mission progress.
-- 📜 Recent Run History tối đa 30 ván.
-- ⚙️ Sound, Reduced Motion và Save Export.
+- 🏅 Ranked Rating: từ 800–2500.
+- 🥉 Bronze → 🥈 Silver → 🥇 Gold → 💠 Platinum → 💎 Diamond → 👑 Master → 🌌 Grandmaster.
+- 🏆 Weekly Tournament Score.
+- 📅 Daily Event Progress.
+- 🎁 Loot Vault gồm 12 vật phẩm sưu tầm.
+- 🏅 10 Seasonal Badges.
+- 📖 Quiz Codex gồm 12 discoveries.
+- 📜 Ranked Run History tối đa 20 lượt.
+- ⭐ Season XP.
 
-### 🗺️ Campaign
+### 🏅 Ranked Rating
 
-Hành trình 30 chapter tăng dần theo số ván và số câu đúng. Đây là lớp progression dài hạn độc lập với Level/XP hiện có.
+Mỗi ván hoàn thành tạo ra thay đổi Rating dựa trên điểm số và kết quả. Rating được giới hạn để tránh tăng vô hạn và xác định Division hiện tại.
 
-### 📚 Category Mastery
+### 🏆 Weekly Tournament
 
-Mỗi chủ đề có Mastery Level 0–10, dựa trên số câu đúng và số lần chơi. Người chơi có thể theo dõi accuracy, games và best score theo từng chủ đề.
+Mỗi tuần có một bảng điểm tournament cục bộ:
 
-### 🗝️ Relic Collection
+- Tournament Runs
+- Wins
+- Weekly Score
+- Best Run
 
-25 relics để sưu tầm, từ Common milestones đến các mốc chuyên biệt:
+Dữ liệu reset theo tuần, nhưng Rating và bộ sưu tập mùa vẫn được giữ.
 
-- Combo
-- Speed
-- XP
-- Level
-- Categories
-- Daily Challenge
-- Streak
-- Score
-- Content specialization
+### 🌠 Daily Event
 
-### 🏅 Player Titles
+Mỗi ngày có một event progress riêng. Hoàn thành 100% sẽ mở khóa phần thưởng gồm Season XP và loot.
 
-Danh hiệu tự động mở khóa theo thành tích:
+### 🎁 Loot Vault
 
-Rookie → Explorer → Scholar → Speedrunner → Combo Master → Quiz Master → Veteran → Legend → Completionist → Prestige.
+12 loot items được mở ngẫu nhiên qua các ván và event. Collection được lưu độc lập với Shop và Relics của v3.
 
-### 📅 Weekly Missions
+### 📖 Quiz Codex
 
-Theo dõi bốn mục tiêu mỗi tuần:
+12 discovery milestones theo dõi các mốc lớn như:
 
-- Chơi 5 ván.
-- Đúng 40 câu.
-- Kiếm 5.000 điểm.
-- Đạt combo 10.
+- 10 runs
+- 100 speed bonus
+- Combo 15
+- Survival
+- 250 câu đúng
+- 10.000 điểm
+- 5 loot
+- 10 tournament runs
+- Rating 1250/1500
+- Daily Event
+- 5.000 Season XP
 
-### 📜 Run History
+### 🏅 Seasonal Badges
 
-Lưu 30 ván gần nhất với:
+10 badge milestones tự động mở khóa theo Rating, Tournament, Event, Loot và Season XP.
 
-- điểm
-- đúng/sai
-- combo
-- category
-- mode
-- ngày chơi
+### 💾 Save Isolation
 
-### 💾 Super Save Layer
+v4 dùng key riêng `quizGame_v400_super2`, không ghi đè trực tiếp save v3/v2. Hệ thống tự reset phần dữ liệu theo mùa/tuần/ngày khi bước sang chu kỳ mới.
 
-Dữ liệu Super Major nằm trong `quizGame_v300_super`, tách khỏi save cũ để giảm nguy cơ phá dữ liệu v1/v2. Có reset riêng và export JSON.
+## v3.0.0 + Existing Systems
+
+Toàn bộ hệ thống cũ vẫn được giữ:
+
+- 🌌 Player Hub
+- 🗺️ Campaign 30 chapters
+- 📚 Category Mastery
+- 🗝️ 25 Relics
+- 📅 Weekly Missions
+- 📜 Run History
+- ⚙️ Settings + Save Export
+- 🎮 6 Game Modes
+- 🧩 Power-ups
+- 🎯 Daily Quest + Streak
+- ⭐ XP + Level + Rank
+- 🔥 Combo + Bonus
+- 🏆 Achievements
+- 🪙 Coins + Shop
+- 👤 Profile
+- 🏅 Local Leaderboard
+- 📊 Lifetime Statistics
 
 ## 📚 Content Base
 
@@ -77,39 +95,11 @@ Dữ liệu Super Major nằm trong `quizGame_v300_super`, tách khỏi save cũ
 - **15 chủ đề:** Tổng hợp, Khoa học, Địa lý, Lịch sử, Công nghệ, Toán, Sinh học, Vật lý, Hóa học, Vũ trụ, Văn hóa, Thể thao, Văn học, Việt Nam và Logic.
 - Content pack độc lập `expansion-content.js` bổ sung vào `QUESTION_BANK`.
 
-## 🎮 Game Modes
-
-- 🎯 Classic
-- 💀 Hard Mode
-- 🛡️ Survival
-- 🔥 Combo Rush
-- ⏱️ Time Attack
-- 📅 Daily Challenge
-
-## 🧩 Power-ups
-
-- 💡 50/50
-- ⏸️ Freeze
-- ✖️ Double
-- 🛡️ Shield
-- 🔄 Reroll
-
-## 🎯 Existing Progression
-
-- XP + Level + Rank
-- Combo + Bonus
-- Achievement
-- Coins + Shop
-- Profile
-- Lifetime Statistics
-- Local Leaderboard
-- Daily Quest + Daily Streak
-
 ## 📱 PWA / Offline
 
-- `manifest.json` đã lên v3.0.0.
-- Service Worker dùng cache `quiz-game-v3.0.0`.
-- `supermajor.js` và `supermajor.css` được cache để Player Hub hoạt động offline.
+- `manifest.json` lên v4.0.0.
+- Service Worker dùng cache `quiz-game-v4.0.0`.
+- `supermajor4.js` và `supermajor4.css` được cache để Season HQ hoạt động offline.
 
 ## Công nghệ
 
@@ -141,7 +131,9 @@ quiz-game/
 ├── index.html
 ├── style.css
 ├── supermajor.css
+├── supermajor4.css
 ├── supermajor.js
+├── supermajor4.js
 ├── script.js
 ├── questions.js
 ├── expansion-content.js
@@ -171,4 +163,5 @@ quiz-game/
 - v1.0.2: Statistics Update + Lifetime Player Stats
 - v2.0.0: The Big Update — Game Modes + Power-ups + Daily Quest + Central v2 Save
 - v2.1.0: Mega Content Update — 124+ Questions + 15 Categories
-- **v3.0.0: Super Major Update — Player Hub + Campaign + Mastery + Relics + Weekly Missions + History + Settings**
+- v3.0.0: Super Major Update — Player Hub + Campaign + Mastery + Relics + Weekly Missions + History + Settings
+- **v4.0.0: Super Major II — Seasons + Ranked Rating + Weekly Tournament + Daily Event + Loot Vault + Seasonal Badges + Quiz Codex**
