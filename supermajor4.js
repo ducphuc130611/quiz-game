@@ -40,6 +40,7 @@
     data.history.unshift({date:new Date().toISOString(),score,correct,combo,mode,rating:data.rating});data.history=data.history.slice(0,20);
     if(Math.random()<.35)addLoot();
     checkBadges(score,correct,combo,mode);checkCodex(score,correct,combo,mode);save();renderMega();
+    if(window.QuizOnline?.queue) window.QuizOnline.queue("run",{score,correct,combo,mode,rating:data.rating});
   }
   function checkBadges(score,correct,combo,mode){
     const checks=[data.tournament.runs>=1,data.rating>=1100,data.tournament.wins>=1,data.rating>=1000,data.rating>=1200,data.rating>=1500,data.event.claimed||data.event.progress>=100,data.loot.length>=8,data.seasonXP>=2500,data.rating>=2500];
@@ -53,3 +54,11 @@
   const observer=new MutationObserver(()=>{const r=document.getElementById("resultScreen");if(r&&r.classList.contains("active")&&!r.dataset.mega4){r.dataset.mega4="1";setTimeout(()=>{updateFromRun();r.dataset.mega4=""},180)}});observer.observe(document.body,{attributes:true,subtree:true,attributeFilter:["class"]});
   window.QuizMegaMajor={data,render,updateFromRun};
 })();
+
+// v5.0.0 online bridge: load the optional online layer without changing the quiz core.
+if (!document.querySelector('script[data-v500-online]')) {
+  const s = document.createElement('script');
+  s.src = './online.js';
+  s.dataset.v500Online = '1';
+  document.body.appendChild(s);
+}
