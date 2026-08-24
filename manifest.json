@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v2.1.0 — Mega Content Update",
+  "name": "Quiz Game v3.0.0 — Super Major Update",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v2.1.0 with 160+ questions, 15 categories, game modes, power-ups and Daily Quest.",
+  "description": "Quiz Game v3.0.0 with 124+ questions, 15 categories, game modes, power-ups, Campaign, Mastery, Relics, Weekly Missions and Player Hub.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
