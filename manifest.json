@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v5.2.0 — Persistent Online",
+  "name": "Quiz Game v5.3.0 — Authenticated Online",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v5.2.0 with persistent online player sync, score leaderboard foundation and offline-first play.",
+  "description": "Quiz Game v5.3.0 with authenticated accounts, protected cloud sync, persistent online data and offline-first play.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
