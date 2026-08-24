@@ -1,51 +1,81 @@
 # Quiz Game
 
-**Version:** v0.0.7
+**Version:** v1.0.0 — Official Release
 
 Game quiz trắc nghiệm chạy hoàn toàn trên trình duyệt và sẵn sàng cho GitHub Pages.
 
-## v0.0.7 — Leaderboard System
+## v1.0.0 — Official Release
+
+Bản release đầu tiên hoàn chỉnh của Quiz Game, tổng hợp toàn bộ hệ thống đã phát triển từ v0.0.1 đến v0.0.7.
+
+### Core Quiz
 
 - 10 câu hỏi mỗi ván.
 - 15 giây cho mỗi câu.
 - 100 điểm cơ bản cho mỗi câu đúng.
-- 🔥 Combo liên tiếp tăng hệ số điểm.
-- ⚡ Speed Bonus tối đa 50 điểm.
-- 🎁 Combo Bonus.
-- ⭐ XP + Level + Rank.
-- 🏆 Achievement System với 10 thành tích.
-- 🪙 Coin System: nhận Coins sau mỗi ván dựa trên điểm số.
-- 🛒 Shop System với 5 vật phẩm.
-- 👤 Profile System: tên người chơi, avatar và thống kê cá nhân.
-- 🏆 Leaderboard System với Top 10 điểm số.
-- 📊 Leaderboard lưu tên, điểm, số câu đúng, độ chính xác và ngày chơi.
-- 🥇🥈🥉 Ba vị trí đầu có huy chương riêng.
-- 💾 Leaderboard được lưu bằng `localStorage` trên trình duyệt.
 - Chọn chủ đề: Tổng hợp, Khoa học, Địa lý, Lịch sử, Công nghệ.
 - Trộn câu hỏi và đáp án theo mỗi ván.
 - Hiển thị đáp án đúng khi trả lời sai hoặc hết giờ.
 - Giao diện responsive cho máy tính và điện thoại.
-- Không cần backend hoặc thư viện ngoài.
 
-## Leaderboard v0.0.7
+### Combo & Bonus
 
-Sau mỗi ván, điểm số được tự động ghi vào bảng xếp hạng cục bộ. Bảng giữ tối đa 10 kết quả và sắp xếp theo điểm giảm dần.
+- 🔥 Combo liên tiếp tăng hệ số điểm.
+- ⚡ Speed Bonus tối đa 50 điểm.
+- 🎁 Combo Bonus.
+- Combo reset khi trả lời sai hoặc hết giờ.
 
-Leaderboard hiện là **local leaderboard**, nghĩa là dữ liệu chỉ được lưu trên trình duyệt của người chơi. Chưa có máy chủ chung giữa nhiều người chơi.
+### XP, Level & Rank
 
-## Profile
+- ⭐ XP cho câu trả lời đúng và hoàn thành ván.
+- 📈 Level tối đa 100.
+- 🏅 Rank từ NEWCOMER đến LEGEND.
+- 🎉 Thông báo Level Up.
+- 📊 Thanh XP.
 
-Người chơi có thể:
+### Achievement
 
-- Đặt tên tối đa 16 ký tự.
-- Chọn 1 trong 8 avatar.
-- Xem Level và Rank.
-- Theo dõi thanh XP.
-- Xem số ván đã hoàn thành.
-- Xem High Score.
-- Xem tiến độ Achievement.
-- Xem Coins và số item đã mua.
-- Đổi tên/avatar mà không reset dữ liệu game.
+- 🏆 10 thành tích.
+- 🔒 Thành tích chưa mở khóa.
+- 💾 Tiến độ lưu bằng `localStorage`.
+
+### Shop & Coins
+
+- 🪙 Coins nhận được sau mỗi ván.
+- 🛒 Shop với 5 vật phẩm.
+- 💾 Vật phẩm đã mua được lưu trên trình duyệt.
+
+### Profile
+
+- 👤 Tên người chơi tối đa 16 ký tự.
+- 🎭 8 avatar.
+- ⭐ Level và Rank.
+- 📊 XP.
+- 🎮 Số ván đã chơi.
+- 🏆 High Score.
+- 🏅 Achievement progress.
+- 🪙 Coins và số item đã mua.
+
+### Leaderboard
+
+- 🏆 Top 10 điểm số.
+- 🥇🥈🥉 Huy chương cho Top 3.
+- 👤 Tên người chơi.
+- 🎯 Số câu đúng.
+- 📊 Độ chính xác.
+- 📅 Ngày chơi.
+- 💾 Lưu bằng `localStorage`.
+
+> **Lưu ý:** Leaderboard hiện là local leaderboard. Dữ liệu chỉ tồn tại trên trình duyệt hiện tại và chưa đồng bộ giữa nhiều người chơi.
+
+## Công nghệ
+
+- HTML5
+- CSS3
+- JavaScript thuần
+- Không cần backend.
+- Không dùng thư viện ngoài.
+- Chạy được trên GitHub Pages.
 
 ## Chạy local
 
@@ -74,7 +104,13 @@ quiz-game/
 └── README.md
 ```
 
-## Roadmap
+## Release History
 
-- v0.0.7: ✅ Leaderboard.
-- v1.0.0: Release chính thức.
+- v0.0.1: Core Quiz
+- v0.0.2: Combo + Bonus
+- v0.0.3: XP + Level
+- v0.0.4: Achievement
+- v0.0.5: Shop
+- v0.0.6: Profile
+- v0.0.7: Leaderboard
+- **v1.0.0: Official Release**
