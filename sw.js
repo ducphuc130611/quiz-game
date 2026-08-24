@@ -1,4 +1,4 @@
-const CACHE_NAME = "quiz-game-v1.0.0";
+const CACHE_NAME = "quiz-game-v1.0.1";
 const ASSETS = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const ASSETS = [
   "./script.js",
   "./shop.js",
   "./profile.js",
+  "./keyboard.js",
   "./manifest.json"
 ];
 
