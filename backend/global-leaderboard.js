@@ -7,19 +7,27 @@ export function registerGlobalLeaderboardRoutes(app, { db, auth, version }) {
   function buildRows(season = "all") {
     const rows = Object.values(db.players).map(player => {
       const events = Array.isArray(player.events) ? player.events : [];
-      const filtered = season === "all"
-        ? events
-        : events.filter(event => String(event.season || "") === season);
-      const score = filtered.reduce((sum, event) => sum + Number(event.score || 0), 0);
-      const correct = filtered.reduce((sum, event) => sum + Number(event.correct || 0), 0);
-      const total = filtered.reduce((sum, event) => sum + Number(event.total || 0), 0);
-      const bestScore = filtered.reduce((best, event) => Math.max(best, Number(event.score || 0)), 0);
+      const isAllTime = season === "all";
+      const filtered = isAllTime ? events : events.filter(event => String(event.season || "all") === season);
+      const score = isAllTime
+        ? Number(player.totalScore || 0)
+        : filtered.reduce((sum, event) => sum + Number(event.score || 0), 0);
+      const correct = isAllTime
+        ? Number(player.totalCorrect || 0)
+        : filtered.reduce((sum, event) => sum + Number(event.correct || 0), 0);
+      const total = isAllTime
+        ? Number(player.totalQuestions || 0)
+        : filtered.reduce((sum, event) => sum + Number(event.total || 0), 0);
+      const bestScore = isAllTime
+        ? Number(player.bestScore || 0)
+        : filtered.reduce((best, event) => Math.max(best, Number(event.score || 0)), 0);
+      const games = isAllTime ? Number(player.games || 0) : filtered.length;
       return {
         playerId: player.playerId,
         username: player.username,
         score,
         bestScore,
-        games: filtered.length,
+        games,
         accuracy: total ? Math.round((correct / total) * 10000) / 100 : 0,
         updatedAt: player.updatedAt || null
       };
