@@ -1,20 +1,34 @@
 # Quiz Game
 
-**Version:** v5.1.0 — ONLINE SERVER KIT 🌐🚀
+**Version:** v5.2.0 — PERSISTENT ONLINE 🌐☁️
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.1.0 mở rộng Online Foundation thành một **backend kit chạy được bằng Node.js**, có health check, player sync và online leaderboard foundation. Frontend vẫn chơi offline nếu không cấu hình server.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.2.0 nâng Online Server Kit thành nền tảng có **persistent JSON storage**, player sync và score-based online leaderboard foundation.
 
-## v5.1.0 — ONLINE SERVER KIT
+## v5.2.0 — PERSISTENT ONLINE
 
-### 🌐 Runnable Online API
+### ☁️ Persistent Online Backend
 
 Thư mục `backend/` chứa server Node.js/Express tùy chọn:
 
-- `GET /health` — kiểm tra server.
-- `POST /players/sync` — nhận Player ID, username và pending events.
-- `GET /leaderboard` — trả về bảng xếp hạng hoạt động online hiện tại.
+- `GET /health` — kiểm tra server và persistence.
+- `POST /players/sync` — nhận Player ID, username và pending game events.
+- `GET /leaderboard` — trả về top 100 người chơi theo tổng điểm đã đồng bộ.
 
-Chạy:
+Dữ liệu được lưu trong `backend/db.json`, không còn mất khi server Node.js restart trên một filesystem có thể ghi.
+
+Mỗi player lưu:
+
+- Player ID
+- Username
+- Synced game events
+- Total score
+- Total correct answers
+- Total questions
+- Best score
+- Games synced
+- Last update time
+
+### Chạy backend
 
 ```text
 cd backend
@@ -24,9 +38,7 @@ npm start
 
 Mặc định server chạy ở port `3000`.
 
-### ☁️ Kết nối frontend
-
-`online.js` đã có adapter:
+### Kết nối frontend
 
 ```js
 QuizOnline.configure("http://localhost:3000");
@@ -34,11 +46,19 @@ QuizOnline.configure("http://localhost:3000");
 
 Sau đó `QuizOnline.sync()` có thể gửi pending queue tới `/players/sync`.
 
-### ⚠️ Giới hạn v5.1.0
+### ⚠️ Giới hạn v5.2.0
 
-Backend hiện dùng `Map` trong RAM để làm nền tảng phát triển. Restart server sẽ xóa dữ liệu online. Đây **chưa phải production backend**. Trước khi public cần thêm database, authentication, rate limiting, HTTPS, validation và persistent leaderboard.
+JSON database là bước chuyển tiếp quan trọng nhưng **chưa phải production database**. Trước khi mở tài khoản toàn cầu hoặc ranked competition cần thêm database thực thụ, authentication, rate limiting, HTTPS, schema validation, backup và transactional persistence.
 
-GitHub Pages vẫn chỉ host frontend; server phải được deploy riêng.
+GitHub Pages vẫn chỉ host frontend; backend phải được deploy riêng.
+
+## v5.1.0 — ONLINE SERVER KIT
+
+- 🌐 Runnable Node.js API.
+- ❤️ Health Check.
+- ☁️ Player Sync API.
+- 🏆 Online Leaderboard Foundation.
+- 📚 Backend documentation.
 
 ## v5.0.0 — ONLINE FOUNDATION
 
@@ -89,8 +109,8 @@ GitHub Pages vẫn chỉ host frontend; server phải được deploy riêng.
 
 ## 📱 PWA / Offline
 
-- `manifest.json` lên v5.1.0.
-- Service Worker dùng cache `quiz-game-v5.1.0`.
+- `manifest.json` lên v5.2.0.
+- Service Worker dùng cache `quiz-game-v5.2.0`.
 - Game vẫn chơi được khi backend offline hoặc chưa cấu hình.
 
 ## Công nghệ
@@ -111,7 +131,7 @@ GitHub Pages vẫn chỉ host frontend; server phải được deploy riêng.
 - Node.js 18+
 - Express
 - CORS
-- In-memory Map (development only)
+- JSON persistent storage (development-scale)
 
 ## Cấu trúc
 
@@ -120,6 +140,7 @@ quiz-game/
 ├── backend/
 │   ├── package.json
 │   ├── server.js
+│   ├── db.json
 │   └── README.md
 ├── index.html
 ├── style.css
@@ -164,4 +185,5 @@ Frontend vẫn deploy bình thường từ branch `main` và `/ (root)`. Backend
 - v3.0.0: Super Major Update — Player Hub + Campaign + Mastery + Relics + Weekly Missions + History + Settings
 - v4.0.0: Super Major II — Seasons + Ranked Rating + Weekly Tournament + Daily Event + Loot Vault + Seasonal Badges + Quiz Codex
 - v5.0.0: Online Foundation — Player Identity + Player ID + Cloud Adapter + Sync Queue + Online Hub + Offline-first Architecture
-- **v5.1.0: Online Server Kit — Runnable Node.js API + Health Check + Player Sync + Online Leaderboard Foundation**
+- v5.1.0: Online Server Kit — Runnable Node.js API + Health Check + Player Sync + Online Leaderboard Foundation
+- **v5.2.0: Persistent Online — JSON Database + Score Leaderboard + Persistent Player Statistics**
