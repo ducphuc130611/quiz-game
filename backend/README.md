@@ -1,12 +1,29 @@
-# Quiz Game Online Backend — v5.1.0
+# Quiz Game Online Backend — v5.2.0
 
-This optional Node.js server is the first runnable backend for the v5 online architecture.
+This optional Node.js server upgrades the v5 online architecture with persistent JSON storage and a score-based leaderboard foundation.
 
 ## Endpoints
 
-- `GET /health` — health/version check.
+- `GET /health` — health/version and persistence check.
 - `POST /players/sync` — accepts a Player ID, username and pending client events.
-- `GET /leaderboard` — returns the current in-memory online player activity ranking.
+- `GET /leaderboard` — returns the top 100 players by accumulated score.
+
+## Persistent storage
+
+Player data is stored in `backend/db.json`.
+
+The server keeps:
+
+- Player ID and username
+- Synced game events
+- Total score
+- Total correct answers
+- Total questions
+- Best single-run score
+- Number of synced games
+- Last update timestamp
+
+Only the latest 500 events per player are retained. Writes are serialized to avoid overlapping file writes.
 
 ## Run
 
@@ -26,4 +43,6 @@ The frontend's `QuizOnline.configure()` expects the API base URL. For example:
 QuizOnline.configure("http://localhost:3000");
 ```
 
-This backend is intentionally minimal and uses memory storage. Restarting the server clears its data. A production deployment should replace the `Map` with a database, add authentication, rate limiting, validation, HTTPS and persistent leaderboard storage.
+## Important production note
+
+The JSON database is persistent on a normal writable server filesystem, but it is still a development-scale database. A production deployment should add a real database, authentication, rate limiting, HTTPS, stronger schema validation, backups and transactional persistence before opening global accounts or competitive rankings to the public.
