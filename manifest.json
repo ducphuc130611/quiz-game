@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v5.5.0 — Global Leaderboard",
+  "name": "Quiz Game v5.6.0 — Server-Authoritative Ranked",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v5.5.0 with authenticated online accounts, persistent data, global leaderboard and offline-first play.",
+  "description": "Quiz Game v5.6.0 with authenticated online accounts, persistent data, global leaderboard and server-authoritative ranked runs.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
