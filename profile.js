@@ -1,0 +1,7 @@
+const PROFILE_KEY="quizGame_v006_profile";
+const PROFILE_DEFAULT={name:"Player",avatar:"🎮"};
+function getProfile(){try{return {...PROFILE_DEFAULT,...JSON.parse(localStorage.getItem(PROFILE_KEY)||"{}")}}catch(e){return {...PROFILE_DEFAULT}}}
+function saveProfile(p){localStorage.setItem(PROFILE_KEY,JSON.stringify({name:String(p.name||"Player").trim().slice(0,16)||"Player",avatar:p.avatar||"🎮"}))}
+function renderProfile(){const p=getProfile();$("profileAvatar").textContent=p.avatar;$("profileName").textContent=p.name;$("profileNameInput").value=p.name}
+function setupProfile(){renderProfile();$("profileBtn").addEventListener("click",()=>{renderProfile();document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$("profileScreen").classList.add("active")});$("closeProfileBtn").addEventListener("click",()=>{document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));$("homeScreen").classList.add("active")});$("saveProfileBtn").addEventListener("click",()=>{saveProfile({name:$("profileNameInput").value,avatar:document.querySelector(".avatar-choice.selected")?.dataset.avatar||"🎮"});renderProfile()});document.querySelectorAll(".avatar-choice").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".avatar-choice").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}))}
+document.addEventListener("DOMContentLoaded",setupProfile);
