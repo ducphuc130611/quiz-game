@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v5.4.0 — Security & Online Hardening",
+  "name": "Quiz Game v5.5.0 — Global Leaderboard",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v5.4.0 with hardened authenticated accounts, protected cloud sync, persistent online data and offline-first play.",
+  "description": "Quiz Game v5.5.0 with authenticated online accounts, persistent data, global leaderboard and offline-first play.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
