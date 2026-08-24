@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v1.0.2",
+  "name": "Quiz Game v2.0.0 — The Big Update",
   "short_name": "Quiz Game",
-  "description": "Quiz Game v1.0.2 - Statistics Update with lifetime player stats.",
+  "description": "Quiz Game v2.0.0 with game modes, power-ups, Daily Quest and expanded progression.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
