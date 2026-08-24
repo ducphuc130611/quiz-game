@@ -1,8 +1,7 @@
-const CACHE_NAME = "quiz-game-v2.1.0";
+const CACHE_NAME = "quiz-game-v3.0.0";
 const ASSETS = [
-  "./", "./index.html", "./style.css", "./questions.js", "./expansion-content.js", "./achievements.js",
-  "./leaderboard.js", "./script.js", "./stats.js", "./shop.js", "./profile.js",
-  "./keyboard.js", "./v2-system.js", "./manifest.json"
+  "./", "./index.html", "./style.css", "./supermajor.css", "./supermajor.js", "./questions.js", "./expansion-content.js", "./achievements.js",
+  "./leaderboard.js", "./script.js", "./stats.js", "./shop.js", "./profile.js", "./keyboard.js", "./v2-system.js", "./manifest.json"
 ];
 self.addEventListener("install", event => { event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener("activate", event => { event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))))); self.clients.claim(); });
