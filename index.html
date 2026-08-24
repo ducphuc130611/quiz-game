@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Quiz Game v0.0.1 - Game trắc nghiệm kiến thức tổng hợp.">
-  <title>Quiz Game v0.0.1</title>
+  <meta name="description" content="Quiz Game v0.0.2 - Game trắc nghiệm kiến thức tổng hợp.">
+  <title>Quiz Game v0.0.2</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app">
     <section id="homeScreen" class="screen active">
       <div class="hero">
-        <div class="version">VERSION 0.0.1</div>
+        <div class="version">VERSION 0.0.2</div>
         <h1>QUIZ<br><span>GAME</span></h1>
-        <p>Thử thách kiến thức của bạn qua những câu hỏi nhanh và thú vị.</p>
+        <p>Thử thách kiến thức, xây dựng combo và kiếm bonus điểm.</p>
       </div>
 
       <div class="home-card">
@@ -28,7 +28,12 @@
         <div class="rules">
           <div><strong>10</strong><span>CÂU HỎI</span></div>
           <div><strong>15s</strong><span>MỖI CÂU</span></div>
-          <div><strong>100</strong><span>ĐIỂM/CÂU</span></div>
+          <div><strong>100+</strong><span>ĐIỂM/CÂU</span></div>
+        </div>
+
+        <div class="bonus-info">
+          <div><span>🔥</span><strong>COMBO</strong><small>Chuỗi đúng tăng hệ số điểm</small></div>
+          <div><span>⚡</span><strong>SPEED BONUS</strong><small>Trả lời nhanh nhận thêm điểm</small></div>
         </div>
 
         <button id="startBtn" class="primary-btn">BẮT ĐẦU CHƠI</button>
@@ -52,6 +57,15 @@
         </div>
       </header>
 
+      <div class="combo-bar">
+        <div id="comboBox" class="combo-box">
+          <span>🔥 COMBO</span>
+          <strong id="comboCount">0</strong>
+          <b id="comboMultiplier">x1</b>
+        </div>
+        <span class="combo-hint">2 combo = x1.5 • 4 combo = x2 • 6+ combo = x3</span>
+      </div>
+
       <div class="progress-track">
         <div id="progressBar" class="progress-bar"></div>
       </div>
@@ -67,7 +81,7 @@
     <section id="resultScreen" class="screen">
       <div class="result-card">
         <div class="result-icon">🏆</div>
-        <div class="version">QUIZ COMPLETE</div>
+        <div class="version">QUIZ COMPLETE • v0.0.2</div>
         <h2>KẾT QUẢ</h2>
         <p class="result-message" id="resultMessage">Làm tốt lắm!</p>
 
@@ -82,6 +96,11 @@
           <div><strong id="accuracy">0%</strong><span>CHÍNH XÁC</span></div>
         </div>
 
+        <div class="bonus-results">
+          <div><span>🔥 COMBO CAO NHẤT</span><strong id="bestCombo">0</strong></div>
+          <div><span>⚡ BONUS ĐIỂM</span><strong id="bonusScore">+0</strong></div>
+        </div>
+
         <p class="record" id="recordMessage"></p>
         <button id="playAgainBtn" class="primary-btn">CHƠI LẠI</button>
         <button id="homeBtn" class="secondary-btn">VỀ TRANG CHỦ</button>
@@ -89,7 +108,7 @@
     </section>
   </main>
 
-  <footer>Quiz Game v0.0.1 • Made for GitHub Pages</footer>
+  <footer>Quiz Game v0.0.2 • Combo & Bonus System • Made for GitHub Pages</footer>
 
   <script src="questions.js"></script>
   <script src="script.js"></script>
