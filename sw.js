@@ -1,6 +1,6 @@
-const CACHE_NAME = "quiz-game-v3.0.0-r2";
+const CACHE_NAME = "quiz-game-v4.0.0";
 const ASSETS = [
-  "./", "./index.html", "./style.css", "./supermajor.css", "./supermajor.js", "./questions.js", "./expansion-content.js", "./achievements.js",
+  "./", "./index.html", "./style.css", "./supermajor.css", "./supermajor4.css", "./supermajor.js", "./supermajor4.js", "./questions.js", "./expansion-content.js", "./achievements.js",
   "./leaderboard.js", "./script.js", "./stats.js", "./shop.js", "./profile.js", "./keyboard.js", "./v2-system.js", "./manifest.json"
 ];
 self.addEventListener("install", event => { event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))); self.skipWaiting(); });
