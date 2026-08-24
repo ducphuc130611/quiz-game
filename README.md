@@ -1,40 +1,45 @@
 # Quiz Game
 
-**Version:** v5.4.0 — SECURITY & ONLINE HARDENING 🛡️🌐
+**Version:** v5.5.0 — GLOBAL LEADERBOARD 🌍🏆
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.4.0 củng cố backend online bằng security headers, CORS allowlist, rate limiting riêng cho authentication, login lockout, session revocation, password change và validation dữ liệu sync.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.5.0 mở rộng Online Foundation thành Global Leaderboard với phân trang, season filter, player rank và giao diện bảng xếp hạng online.
 
-## v5.4.0 — SECURITY & ONLINE HARDENING
+## v5.5.0 — GLOBAL LEADERBOARD
 
-### 🛡️ Backend Security
+### 🌍 Global Ranking
+
+- `GET /leaderboard/global` — bảng xếp hạng công khai.
+- Pagination tối đa 100 người/trang.
+- `season` filter cho all-time hoặc season cụ thể.
+- Score, best score, games và accuracy.
+- `GET /leaderboard/me` — thứ hạng của tài khoản đang đăng nhập.
+- `GET /leaderboard/seasons` — danh sách season có dữ liệu.
+- Global Leaderboard UI ngay trên trang chủ.
+- Offline vẫn chơi bình thường; Global Leaderboard yêu cầu backend online.
+
+### 🔐 Authentication vẫn giữ nguyên
+
+- `POST /auth/register`
+- `POST /auth/login`
+- `GET /auth/me`
+- `POST /auth/logout`
+- `POST /auth/logout-all`
+- `POST /auth/change-password`
+- `POST /players/sync`
+
+Mật khẩu không lưu plaintext. Server dùng Node.js `scrypt` + salt; session token được lưu dưới dạng SHA-256 hash.
+
+### 🛡️ Security
 
 - Security response headers.
 - `X-Powered-By` disabled.
 - Configurable `CORS_ORIGIN` allowlist.
 - 128 KB JSON request limit.
 - Authentication rate limit.
-- Temporary login lockout after repeated failures.
+- Temporary login lockout.
 - Constant-time password hash comparison.
-- `POST /auth/logout-all` để thu hồi toàn bộ session.
-- `POST /auth/change-password` để đổi mật khẩu và thu hồi các session khác.
 - Server-side bounds cho synced score/correct/total.
-- Generic 500 errors không trả chi tiết exception.
-- Cleanup session/rate-limit state định kỳ.
-
-### 🔐 Account System
-
-Backend hỗ trợ:
-
-- `POST /auth/register` — tạo tài khoản.
-- `POST /auth/login` — đăng nhập và nhận session token.
-- `GET /auth/me` — kiểm tra tài khoản hiện tại.
-- `POST /auth/logout` — thu hồi session hiện tại.
-- `POST /auth/logout-all` — thu hồi mọi session.
-- `POST /auth/change-password` — đổi mật khẩu.
-- `POST /players/sync` — yêu cầu authentication và chỉ cho phép đồng bộ Player ID thuộc tài khoản.
-- `GET /leaderboard` — leaderboard online theo tổng điểm.
-
-Mật khẩu **không được lưu dạng plaintext**. Server dùng Node.js `scrypt` + salt và token session ngẫu nhiên được lưu dưới dạng SHA-256 hash.
+- Generic 500 errors.
 
 ### Chạy backend
 
@@ -54,25 +59,30 @@ CORS_ORIGIN=https://your-github-pages-site.example
 TRUST_PROXY=1
 ```
 
-`CORS_ORIGIN` nên được cấu hình thành allowlist cụ thể khi deploy. Chỉ bật `TRUST_PROXY=1` khi backend thực sự nằm sau reverse proxy đáng tin cậy.
-
 ### Kết nối frontend
 
 ```js
 QuizOnline.configure("http://localhost:3000");
 ```
 
-Sau đó mở **🌐 ONLINE**, tạo tài khoản/đăng nhập rồi `SYNC NOW` để đồng bộ pending queue.
+Sau đó mở **🌐 ONLINE**, đăng nhập và dùng **🌍 GLOBAL LEADERBOARD**.
 
 ### 💾 Offline-first
 
-Không có backend vẫn chơi được. Pending events tiếp tục được giữ local; cloud sync chỉ hoạt động khi có API endpoint và tài khoản đã xác thực.
+Không có backend vẫn chơi được. Global Leaderboard chỉ là lớp online bổ sung và không thay thế local game/save.
 
-### ⚠️ Giới hạn v5.4.0
+## ⚠️ Giới hạn v5.5.0
 
-Đây là **security hardening foundation**, chưa phải hệ thống production hoàn chỉnh. JSON database vẫn là development-scale storage. Trước khi mở ranked competition công khai cần database production, HTTPS deployment, email verification, password reset, persistent/distributed rate limiting, audit logs, backups, monitoring, secret management và server-authoritative scoring/anti-cheat.
+Đây là **Global Leaderboard foundation**, chưa phải hệ thống competitive production hoàn chỉnh. Dữ liệu vẫn dùng JSON development-scale; score hiện vẫn bắt nguồn từ client sync nên **chưa thể coi là anti-cheat/server-authoritative scoring**. Trước khi mở ranked competition quy mô lớn cần database production, HTTPS, persistent/distributed rate limiting, audit logs, backups, monitoring, secret management và server-authoritative match validation.
 
 GitHub Pages chỉ host frontend; backend phải được deploy riêng.
+
+## v5.4.0 — SECURITY & ONLINE HARDENING
+
+- 🛡️ Security headers, CORS allowlist, rate limiting.
+- 🔐 Login lockout, session revocation, password change.
+- 📊 Sync validation.
+- 🧹 Session/rate-limit cleanup.
 
 ## v5.3.0 — AUTHENTICATED ONLINE
 
@@ -88,7 +98,6 @@ GitHub Pages chỉ host frontend; backend phải được deploy riêng.
 - 🏆 Score-based online leaderboard.
 - 📊 Persistent player statistics.
 - 🔄 Serialized database writes.
-- ❤️ Health check với persistence status.
 
 ## v5.1.0 — ONLINE SERVER KIT
 
@@ -96,17 +105,15 @@ GitHub Pages chỉ host frontend; backend phải được deploy riêng.
 - ❤️ Health Check.
 - ☁️ Player Sync API.
 - 🏆 Online Leaderboard Foundation.
-- 📚 Backend documentation.
 
 ## v5.0.0 — ONLINE FOUNDATION
 
-- 🆔 Player ID duy nhất.
-- 👤 Username tối đa 16 ký tự.
+- 🆔 Player ID.
+- 👤 Username.
 - ☁️ Cloud sync adapter.
 - 📦 Export Online Profile.
 - 📡 Pending Sync Queue.
 - 🟢 Connected / 🟠 Retry / ⚪ Offline-first status.
-- 💾 Save isolation.
 
 ## v4.0.0 — SUPER MAJOR II
 
@@ -147,8 +154,8 @@ GitHub Pages chỉ host frontend; backend phải được deploy riêng.
 
 ## 📱 PWA / Offline
 
-- `manifest.json` lên v5.4.0.
-- Service Worker dùng cache cần được bump lên v5.4.0 khi frontend cache được cập nhật.
+- Manifest và Service Worker đã bump lên v5.5.0.
+- `global-leaderboard.js` được cache offline.
 - Game vẫn chơi được khi backend offline hoặc chưa cấu hình.
 
 ## Công nghệ
@@ -180,6 +187,7 @@ quiz-game/
 ├── backend/
 │   ├── package.json
 │   ├── server.js
+│   ├── global-leaderboard.js
 │   ├── db.json
 │   └── README.md
 ├── index.html
@@ -189,6 +197,7 @@ quiz-game/
 ├── supermajor.js
 ├── supermajor4.js
 ├── online.js
+├── global-leaderboard.js
 ├── script.js
 ├── questions.js
 ├── expansion-content.js
@@ -206,7 +215,7 @@ quiz-game/
 
 ## GitHub Pages
 
-Frontend vẫn deploy bình thường từ branch `main` và `/ (root)`. Backend không chạy trên GitHub Pages; hãy deploy thư mục `backend` lên một Node.js hosting riêng rồi cấu hình API URL cho frontend.
+Frontend deploy bình thường từ branch `main` và `/ (root)`. Backend không chạy trên GitHub Pages; deploy thư mục `backend` lên Node.js hosting riêng rồi cấu hình API URL cho frontend.
 
 ## Release History
 
@@ -228,4 +237,5 @@ Frontend vẫn deploy bình thường từ branch `main` và `/ (root)`. Backend
 - v5.1.0: Online Server Kit — Runnable Node.js API + Health Check + Player Sync + Online Leaderboard Foundation
 - v5.2.0: Persistent Online — JSON Database + Score Leaderboard + Persistent Player Statistics
 - v5.3.0: Authenticated Online — Accounts + Password Hashing + Sessions + Protected Sync
-- **v5.4.0: Security & Online Hardening — CORS Allowlist + Security Headers + Login Lockout + Session Revocation + Password Change + Sync Validation**
+- v5.4.0: Security & Online Hardening — CORS Allowlist + Security Headers + Login Lockout + Session Revocation + Password Change + Sync Validation
+- **v5.5.0: Global Leaderboard — Global Ranking + Pagination + Season Filters + Player Rank + Online Leaderboard UI**
