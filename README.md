@@ -1,12 +1,12 @@
 # Quiz Game
 
-**Version:** v1.0.0 — Official Release
+**Version:** v1.0.0 — Official Release 🚀
 
-Game quiz trắc nghiệm chạy hoàn toàn trên trình duyệt và sẵn sàng cho GitHub Pages.
+Game quiz trắc nghiệm chạy trên trình duyệt, tối ưu cho GitHub Pages và có thể cài đặt như một web app.
 
 ## v1.0.0 — Official Release
 
-Bản release đầu tiên hoàn chỉnh của Quiz Game, tổng hợp toàn bộ hệ thống đã phát triển từ v0.0.1 đến v0.0.7.
+Bản release đầu tiên hoàn chỉnh, tổng hợp toàn bộ hệ thống từ v0.0.1 đến v0.0.7 và bổ sung khả năng **cài đặt/offline-ready**.
 
 ### Core Quiz
 
@@ -68,18 +68,27 @@ Bản release đầu tiên hoàn chỉnh của Quiz Game, tổng hợp toàn b�
 
 > **Lưu ý:** Leaderboard hiện là local leaderboard. Dữ liệu chỉ tồn tại trên trình duyệt hiện tại và chưa đồng bộ giữa nhiều người chơi.
 
+### Installable & Offline Ready
+
+- 📱 Có `manifest.json` để hỗ trợ cài đặt như web app.
+- 📦 Có Service Worker để cache các file game.
+- 📴 Sau khi cache thành công, game có thể tiếp tục mở khi mất mạng.
+- 🔄 Cache được version hóa theo `v1.0.0`.
+
 ## Công nghệ
 
 - HTML5
 - CSS3
 - JavaScript thuần
+- Service Worker API
+- Web App Manifest
 - Không cần backend.
 - Không dùng thư viện ngoài.
 - Chạy được trên GitHub Pages.
 
 ## Chạy local
 
-Mở `index.html` bằng trình duyệt là có thể chơi.
+Có thể mở `index.html` trực tiếp để chơi. Tính năng Service Worker/PWA cần môi trường HTTPS hoặc localhost theo quy định của trình duyệt.
 
 ## GitHub Pages
 
@@ -101,6 +110,8 @@ quiz-game/
 ├── leaderboard.js
 ├── shop.js
 ├── profile.js
+├── manifest.json
+├── sw.js
 └── README.md
 ```
 
@@ -113,4 +124,4 @@ quiz-game/
 - v0.0.5: Shop
 - v0.0.6: Profile
 - v0.0.7: Leaderboard
-- **v1.0.0: Official Release**
+- **v1.0.0: Official Release + Installable/Offline Ready**
