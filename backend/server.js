@@ -4,12 +4,13 @@ import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { registerGlobalLeaderboardRoutes } from "./global-leaderboard.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_FILE = path.join(__dirname, "db.json");
-const VERSION = "5.4.0";
+const VERSION = "5.5.0";
 const TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const RATE_WINDOW_MS = 60_000;
 const GENERAL_RATE_LIMIT = 60;
@@ -149,6 +150,7 @@ function normalizeEvent(event) {
     correct: Math.max(0, Math.min(1000, safeNumber(source.correct))),
     total: Math.max(0, Math.min(1000, safeNumber(source.total))),
     mode: String(source.mode || "unknown").slice(0, 32),
+    season: String(source.season || "all").slice(0, 32),
     createdAt: String(source.createdAt || new Date().toISOString()).slice(0, 40)
   };
 }
@@ -177,7 +179,7 @@ function clearLoginFailures(key) {
 }
 
 app.get("/health", (_req, res) => {
-  res.json({ ok: true, service: "quiz-game-online", version: VERSION, persistence: "json", authentication: "session", security: "5.4" });
+  res.json({ ok: true, service: "quiz-game-online", version: VERSION, persistence: "json", authentication: "session", security: "5.4", globalLeaderboard: "5.5" });
 });
 
 app.post("/auth/register", requestRateLimit(AUTH_RATE_LIMIT), async (req, res) => {
@@ -286,6 +288,8 @@ app.get("/leaderboard", (_req, res) => {
   rows.sort((a, b) => b.score - a.score || b.bestScore - a.bestScore);
   res.json({ version: VERSION, leaderboard: rows.slice(0, 100) });
 });
+
+registerGlobalLeaderboardRoutes(app, { db, auth, version: VERSION });
 
 setInterval(() => {
   const now = Date.now();
