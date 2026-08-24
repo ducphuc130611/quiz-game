@@ -1,12 +1,22 @@
 # Quiz Game
 
-**Version:** v1.0.0 — Official Release 🚀
+**Version:** v1.0.1 — Quality Update 🚀
 
 Game quiz trắc nghiệm chạy trên trình duyệt, tối ưu cho GitHub Pages và có thể cài đặt như một web app.
 
-## v1.0.0 — Official Release
+## v1.0.1 — Quality Update
 
-Bản release đầu tiên hoàn chỉnh, tổng hợp toàn bộ hệ thống từ v0.0.1 đến v0.0.7 và bổ sung khả năng **cài đặt/offline-ready**.
+Bản cập nhật sau v1.0.0 tập trung vào trải nghiệm chơi và khả năng điều khiển.
+
+### Keyboard Controls
+
+- ⌨️ Phím `1` chọn đáp án A.
+- ⌨️ Phím `2` chọn đáp án B.
+- ⌨️ Phím `3` chọn đáp án C.
+- ⌨️ Phím `4` chọn đáp án D.
+- ⏎ `Enter` bắt đầu game từ trang chủ hoặc chơi lại từ màn hình kết quả.
+- ⎋ `Esc` đóng Shop, Profile hoặc Leaderboard và quay về trang chủ.
+- Các phím chọn đáp án chỉ hoạt động khi đáp án còn có thể chọn, tránh trả lời hai lần.
 
 ### Core Quiz
 
@@ -73,7 +83,7 @@ Bản release đầu tiên hoàn chỉnh, tổng hợp toàn bộ hệ thống t
 - 📱 Có `manifest.json` để hỗ trợ cài đặt như web app.
 - 📦 Có Service Worker để cache các file game.
 - 📴 Sau khi cache thành công, game có thể tiếp tục mở khi mất mạng.
-- 🔄 Cache được version hóa theo `v1.0.0`.
+- 🔄 Cache được version hóa theo `v1.0.1`.
 
 ## Công nghệ
 
@@ -110,6 +120,7 @@ quiz-game/
 ├── leaderboard.js
 ├── shop.js
 ├── profile.js
+├── keyboard.js
 ├── manifest.json
 ├── sw.js
 └── README.md
@@ -124,4 +135,5 @@ quiz-game/
 - v0.0.5: Shop
 - v0.0.6: Profile
 - v0.0.7: Leaderboard
-- **v1.0.0: Official Release + Installable/Offline Ready**
+- v1.0.0: Official Release + Installable/Offline Ready
+- **v1.0.1: Quality Update + Keyboard Controls**
