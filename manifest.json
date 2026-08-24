@@ -1,0 +1,12 @@
+{
+  "name": "Quiz Game",
+  "short_name": "Quiz Game",
+  "description": "Quiz Game v1.0.0 - Official Release",
+  "lang": "vi",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "icons": []
+}
