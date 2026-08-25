@@ -55,10 +55,17 @@
   window.QuizMegaMajor={data,render,updateFromRun};
 })();
 
-// v5.0.0 online bridge: load the optional online layer without changing the quiz core.
 if (!document.querySelector('script[data-v500-online]')) {
   const s = document.createElement('script');
   s.src = './online.js';
   s.dataset.v500Online = '1';
+  document.body.appendChild(s);
+}
+
+// v6.0.0 Arena & Social Hub
+if (!document.querySelector('script[data-v600-arena]')) {
+  const s = document.createElement('script');
+  s.src = './v6-arena.js';
+  s.dataset.v600Arena = '1';
   document.body.appendChild(s);
 }
