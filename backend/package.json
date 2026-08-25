@@ -1,14 +1,15 @@
 {
   "name": "quiz-game-online-backend",
-  "version": "5.9.0",
+  "version": "6.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "check": "node --check server.js && node --check anti-cheat.js && node --check question-bank.js && node --check global-leaderboard.js && node --check database.js && node --check postgres.js && node --check postgres-migrate.js && node --check migrate.js && node --check smoke-test.js",
+    "start": "node server-v6.js",
+    "start:legacy": "node server.js",
+    "check": "node --check server-v6.js && node --check owner-service.js && node --check server.js && node --check anti-cheat.js && node --check question-bank.js && node --check global-leaderboard.js && node --check database.js && node --check postgres.js && node --check postgres-migrate.js && node --check migrate.js && node --check smoke-test.js",
     "migrate": "node migrate.js",
     "migrate:postgres": "node postgres-migrate.js",
-    "smoke": "node server.js & SERVER_PID=$!; trap 'kill $SERVER_PID' EXIT; sleep 1; node smoke-test.js"
+    "smoke": "node server-v6.js & SERVER_PID=$!; trap 'kill $SERVER_PID' EXIT; sleep 1; node smoke-test-v6.js"
   },
   "engines": { "node": ">=18" },
   "dependencies": { "cors": "^2.8.5", "express": "^4.21.2", "pg": "^8.16.3" }
