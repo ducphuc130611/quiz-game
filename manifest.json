@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v6.0.0 — Arena & Social Hub",
+  "name": "Quiz Game v6.1.0 — Arena Seasons",
   "short_name": "Quiz Arena",
-  "description": "Quiz Game v6.0.0 with Arena battles, bot matchmaking, daily missions, Battle Pass, trophies and online-ready gameplay.",
+  "description": "Quiz Game v6.1.0 with Arena battles, seasonal progression, rewards, trophies and offline-first gameplay.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
