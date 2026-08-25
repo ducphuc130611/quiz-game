@@ -1,7 +1,7 @@
 {
-  "name": "Quiz Game v5.7.0 — Production Readiness",
-  "short_name": "Quiz Game",
-  "description": "Quiz Game v5.7.0 with authenticated online accounts, persistent data, global leaderboard, server-authoritative ranked runs and backend CI validation.",
+  "name": "Quiz Game v6.0.0 — Arena & Social Hub",
+  "short_name": "Quiz Arena",
+  "description": "Quiz Game v6.0.0 with Arena battles, bot matchmaking, daily missions, Battle Pass, trophies and online-ready gameplay.",
   "lang": "vi",
   "start_url": "./",
   "scope": "./",
