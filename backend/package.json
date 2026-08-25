@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check anti-cheat.js && node --check question-bank.js && node --check global-leaderboard.js && node --check database.js && node --check postgres.js && node --check migrate.js && node --check smoke-test.js",
+    "check": "node --check server.js && node --check anti-cheat.js && node --check question-bank.js && node --check global-leaderboard.js && node --check database.js && node --check postgres.js && node --check postgres-migrate.js && node --check migrate.js && node --check smoke-test.js",
     "migrate": "node migrate.js",
+    "migrate:postgres": "node postgres-migrate.js",
     "smoke": "node server.js & SERVER_PID=$!; trap 'kill $SERVER_PID' EXIT; sleep 1; node smoke-test.js"
   },
   "engines": { "node": ">=18" },
