@@ -36,6 +36,7 @@
   window.QuizMegaMajor={data,render,updateFromRun};
 })();
 
+if (!document.querySelector('script[data-v620-compat]')) { const s=document.createElement('script'); s.src='./v6-2-online-compat.js'; s.dataset.v620Compat='1'; document.body.appendChild(s); }
 if (!document.querySelector('script[data-v500-online]')) { const s=document.createElement('script'); s.src='./online.js'; s.dataset.v500Online='1'; document.body.appendChild(s); }
 if (!document.querySelector('script[data-v600-arena]')) { const s=document.createElement('script'); s.src='./v6-arena.js'; s.dataset.v600Arena='1'; document.body.appendChild(s); }
 if (!document.querySelector('script[data-v610-seasons]')) { const s=document.createElement('script'); s.src='./v6-1-seasons.js'; s.dataset.v610Seasons='1'; document.body.appendChild(s); }
