@@ -1,56 +1,77 @@
 # Quiz Game
 
-**Version:** v5.7.0 — PRODUCTION READINESS 🧪🛡️
+**Version:** v6.0.0 — ARENA & SOCIAL HUB ⚔️🏆
 
-Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v5.7.0 bổ sung lớp kiểm tra tự động cho backend: syntax validation, smoke test, CI trên GitHub Actions và environment template để chuẩn bị cho hạ tầng production.
+Quiz Game chạy trên trình duyệt, tối ưu cho GitHub Pages, PWA/offline-first. v6.0.0 là major gameplay expansion: Arena battles, bot matchmaking, daily missions, Battle Pass XP, trophies, coins và match history.
+
+## v6.0.0 — ARENA & SOCIAL HUB
+
+### ⚔️ Arena Hub
+
+- Quick Match với 6 đối thủ có rating/skill khác nhau.
+- Trận đấu 5 câu hỏi.
+- Tính điểm theo streak và độ chính xác.
+- Bot phản hồi theo skill.
+- Victory / Draw / Defeat.
+- Arena Rating 700–3000.
+- Coins và Battle Pass XP.
+- Match history.
+
+### 🎯 Daily Missions
+
+- Play 3 Arena Games.
+- Win 2 Arena Games.
+- Answer 15 Questions.
+- Nhận XP + coins.
+- Reset theo ngày.
+
+### 🎟️ Battle Pass
+
+- Pass level.
+- XP progression.
+- Tự động tăng level.
+- Reward milestones.
+
+### 🏆 Trophy Room
+
+- First Win.
+- Win Streak 3.
+- Rating 1200.
+- Rating 1500.
+- 10 Arena Games.
+- Battle Pass milestones.
+- Daily Hero.
+
+### 🌐 Online-ready
+
+Arena dùng local fallback để chơi ngay cả khi backend không khả dụng. Match event có thể được đưa vào `QuizOnline.queue()` để đồng bộ khi online layer được cấu hình.
+
+**Lưu ý:** v6.0.0 chưa tuyên bố bot Arena là multiplayer PvP thật. PvP server-authoritative sẽ được xây trên nền Arena này ở các bản tiếp theo.
+
+## v5.9.0 — REAL POSTGRESQL FOUNDATION
+
+- PostgreSQL runtime adapter.
+- Connection pool.
+- Transaction helper.
+- PostgreSQL schema cho accounts, players và sessions.
+- JSON → PostgreSQL migration engine.
+- `npm run migrate:postgres`.
+- JSON runtime vẫn được giữ để tránh phá dữ liệu hiện có trong quá trình chuyển đổi.
 
 ## v5.7.0 — PRODUCTION READINESS
 
-### 🧪 Backend CI
-
-- GitHub Actions workflow tại `.github/workflows/backend-ci.yml`.
-- Chạy tự động khi push vào `main` và khi mở Pull Request.
-- Cài dependencies bằng `npm install`.
-- Kiểm tra syntax toàn bộ backend quan trọng.
-- Khởi động server và chạy smoke test `/health`.
-
-### ❤️ Health / Smoke Test
-
-`backend/smoke-test.js` kiểm tra server có khởi động được và health payload có các trường nền tảng cần thiết.
-
-Chạy local:
-
-```text
-cd backend
-npm install
-npm run check
-npm run smoke
-```
-
-### ⚙️ Environment Template
-
-File `backend/.env.example` cung cấp cấu hình mẫu:
-
-```text
-PORT=3000
-CORS_ORIGIN=https://your-github-pages-site.example
-TRUST_PROXY=0
-```
-
-Không commit secrets thật vào repository.
-
-### 🎯 Mục tiêu của v5.7.0
-
-Bản này không giả vờ rằng backend JSON hiện tại đã trở thành production database. Thay vào đó, nó tạo một quality gate để những thay đổi tiếp theo không dễ dàng làm hỏng backend trước khi chuyển sang database production.
+- GitHub Actions backend CI.
+- Syntax validation.
+- Health smoke test.
+- Environment template.
 
 ## v5.6.0 — SERVER-AUTHORITATIVE RANKED
 
-- `POST /runs/start` — server tạo ranked run và phát câu hỏi.
-- `POST /runs/:runId/answer` — server kiểm tra question ID, answer và elapsed time.
-- `POST /runs/:runId/finish` — server tính kết quả cuối cùng và lưu event authoritative.
-- Client không được tự gửi score để quyết định điểm ranked.
-- Server giữ đáp án đúng của ranked question bank.
-- Run có expiry, nonce và duplicate-answer protection.
+- Server tạo ranked run và phát câu hỏi.
+- Server kiểm tra answer và elapsed time.
+- Server tính kết quả cuối cùng.
+- Client không được tự quyết định ranked score.
+- Run expiry, nonce và duplicate-answer protection.
 
 ## v5.5.0 — GLOBAL LEADERBOARD
 
@@ -156,12 +177,16 @@ quiz-game/
 │   ├── anti-cheat.js
 │   ├── question-bank.js
 │   ├── global-leaderboard.js
+│   ├── postgres.js
+│   ├── postgres-migrate.js
+│   ├── schema.sql
 │   ├── db.json
 │   └── README.md
 ├── index.html
 ├── online.js
 ├── global-leaderboard.js
 ├── ranked-online.js
+├── v6-arena.js
 ├── manifest.json
 ├── sw.js
 └── ...
@@ -190,4 +215,7 @@ quiz-game/
 - v5.4.0: Security & Online Hardening
 - v5.5.0: Global Leaderboard
 - v5.6.0: Server-Authoritative Ranked
-- **v5.7.0: Production Readiness — Backend CI + Syntax Checks + Smoke Test + Environment Template**
+- v5.7.0: Production Readiness
+- v5.8.0: Database Infrastructure
+- v5.9.0: Real PostgreSQL Foundation
+- **v6.0.0: Arena & Social Hub — Major Gameplay Expansion**
